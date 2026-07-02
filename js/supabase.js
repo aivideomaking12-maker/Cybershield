@@ -10,23 +10,33 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 let supabaseClient = null;
 
-try {
-    if (typeof supabase !== "undefined" && SUPABASE_URL !== "YOUR_SUPABASE_URL_HERE" && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY_HERE") {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("Supabase kliens sikeresen inicializálva.");
-    } else {
-        console.warn("Supabase nincs konfigurálva vagy a CDN nem töltődött be. Offline mód aktív.");
+function getSupabaseClient() {
+    if (!supabaseClient) {
+        const globalSupabase = window.supabase || (typeof supabase !== "undefined" ? supabase : null);
+        if (globalSupabase && SUPABASE_URL && SUPABASE_URL !== "YOUR_SUPABASE_URL_HERE" && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY_HERE") {
+            try {
+                supabaseClient = globalSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log("Supabase kliens sikeresen inicializálva.");
+            } catch (error) {
+                console.error("Hiba a Supabase kliens inicializálása során:", error);
+            }
+        }
     }
-} catch (error) {
-    console.error("Hiba a Supabase kliens inicializálása során:", error);
+    return supabaseClient;
 }
+
+// Try to initialize immediately if available
+getSupabaseClient();
 
 // Global Supabase helper export
 window.SupabaseConnection = {
-    client: supabaseClient,
+    get client() {
+        return getSupabaseClient();
+    },
     isConfigured: function() {
+        const c = getSupabaseClient();
         return (
-            supabaseClient !== null &&
+            c !== null &&
             SUPABASE_URL !== "" &&
             SUPABASE_URL !== "YOUR_SUPABASE_URL_HERE" &&
             SUPABASE_ANON_KEY !== "" &&
@@ -34,3 +44,4 @@ window.SupabaseConnection = {
         );
     }
 };
+
