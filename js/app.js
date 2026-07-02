@@ -72,10 +72,14 @@ window.App = (function() {
         setupKeyboardNavigation();
     }
 
+    let keyboardNavSetup = false;
     /**
      * Spatial keyboard navigation for accessibility compliance
      */
     function setupKeyboardNavigation() {
+        if (keyboardNavSetup) return;
+        keyboardNavSetup = true;
+        
         window.addEventListener('keydown', (e) => {
             // General "Escape" key goes back to Map HQ
             if (e.key === 'Escape') {
