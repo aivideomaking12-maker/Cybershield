@@ -1124,7 +1124,66 @@
 
     <!-- Scripts linking - Loaded sequentially to respect structure -->
     <!-- Supabase CDN and local config -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <!-- Robust cascading CDN loader for Supabase Client JS -->
+    <script>
+        (function() {
+            const cdns = [
+                "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js",
+                "https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js",
+                "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.6/dist/umd/supabase.js",
+                "https://unpkg.com/@supabase/supabase-js@2.45.6/dist/umd/supabase.js",
+                "https://cdn.jsdelivr.net/npm/@supabase/supabase-js"
+            ];
+            
+            let currentIdx = 0;
+            
+            function tryLoadNext() {
+                if (window.supabase) {
+                    console.log("Supabase sikeresen betöltve a(z) " + currentIdx + ". próbálkozásból.");
+                    return;
+                }
+                if (currentIdx >= cdns.length) {
+                    console.error("Minden Supabase CDN betöltése meghiúsult!");
+                    const statusText = document.getElementById('supabase-status-text');
+                    if (statusText) {
+                        statusText.innerText = "Hiba: Supabase CDN betöltési hiba! Helyi LocalStorage üzemmód aktív.";
+                    }
+                    return;
+                }
+                
+                const url = cdns[currentIdx++];
+                console.log("Supabase CDN betöltési kísérlet (" + currentIdx + "/" + cdns.length + "): " + url);
+                
+                const script = document.createElement('script');
+                script.src = url;
+                script.async = false;
+                script.onload = function() {
+                    if (window.supabase) {
+                        console.log("Supabase sikeresen inicializálva a globális térben innen: " + url);
+                        // If SupabaseConnection exists, trigger retry of initialization
+                        if (window.SupabaseConnection && typeof window.SupabaseConnection.client !== 'undefined') {
+                            const c = window.SupabaseConnection.client;
+                            if (c && window.App && typeof window.App.init === 'function') {
+                                console.log("Újra-inicializálás elindítása a sikeres betöltés után...");
+                                window.App.init();
+                            }
+                        }
+                    } else {
+                        console.warn("Script betöltődött, de a window.supabase undefined maradt: " + url);
+                        tryLoadNext();
+                    }
+                };
+                script.onerror = function() {
+                    console.warn("Sikertelen betöltés erről a CDN-ről: " + url);
+                    tryLoadNext();
+                };
+                document.head.appendChild(script);
+            }
+            
+            // Try loading immediately
+            tryLoadNext();
+        })();
+    </script>
     <script src="js/supabase.js"></script>
     <script src="js/progress.js"></script>
     <script src="js/gamification.js"></script>
