@@ -6,7 +6,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase Project Credentials
-const SUPABASE_URL = "https://bszttorbplxuwpejlsjt.supabase.co/";
+const SUPABASE_URL = "https://hzrisdqqebwhtmzwkveg.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzenR0b3JicGx4dXdwZWpsc2p0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5NTgyNTUsImV4cCI6MjA5ODUzNDI1NX0.i6SQihHpXKZcW_CuZ9hz__SnBkSeZwwe0Hr_FCdQBvk";
 
 let supabaseClient = null;
