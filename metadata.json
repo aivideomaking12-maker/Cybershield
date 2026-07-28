@@ -1,0 +1,6 @@
+{
+  "name": "CyberShield",
+  "description": "Információbiztonsági Digitális Tananyag Rendőrségi Állomány Számára",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
