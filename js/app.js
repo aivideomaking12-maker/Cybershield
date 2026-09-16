@@ -1,7 +1,7 @@
 /**
  * CyberShield - app.js
  * Main entry point of the CyberShield digital curriculum.
- * Bootstraps the application, handles profile creation, reset events,
+ * Bootstraps the application, handles profile creation and logout events,
  * keyboard-based spatial navigation, and teacher JSON report generation.
  */
 
@@ -154,12 +154,23 @@ window.App = (function() {
                     return;
                 }
 
-                window.Gamification.showToast("Sikeres belépés", "Üdvözöljük a CyberShield rendszerben!", "success");
                 await window.Progress.loadFromSupabase(data.user.id);
-                window.Progress.updateHeaderUI();
-
                 const uState = window.Progress.getState();
-                if (uState.user && uState.user.role === 'admin') {
+
+                if (!uState.user) {
+                    await window.SupabaseConnection.client.auth.signOut();
+                    window.Gamification.showToast(
+                        "Profil betöltési hiba",
+                        "A fiókhoz tartozó profil nem tölthető be. Ellenőrizze a Supabase trigger és adatbázis beállításait.",
+                        "error"
+                    );
+                    return;
+                }
+
+                window.Progress.updateHeaderUI();
+                window.Gamification.showToast("Sikeres belépés", "Üdvözöljük a CyberShield rendszerben!", "success");
+
+                if (uState.user.role === 'admin') {
                     window.Navigation.showScreen('screen-teacher');
                 } else {
                     window.Navigation.showScreen('screen-map');
@@ -189,26 +200,28 @@ window.App = (function() {
      */
     async function handleRegister(e) {
         e.preventDefault();
+
         const emailInput = document.getElementById('reg-email');
         const passwordInput = document.getElementById('reg-password');
         const nameInput = document.getElementById('reg-name');
         const rankSelect = document.getElementById('reg-rank');
-        const roleSelect = document.getElementById('reg-role');
         const unitInput = document.getElementById('reg-unit');
 
-        if (!emailInput || !passwordInput || !nameInput || !rankSelect || !roleSelect || !unitInput) return;
+        if (!emailInput || !passwordInput || !nameInput || !rankSelect || !unitInput) return;
 
         const email = emailInput.value.trim();
         const password = passwordInput.value;
         const fullName = nameInput.value.trim();
         const rank = rankSelect.value;
-        const role = roleSelect.value;
         const unit = unitInput.value.trim();
 
         window.Gamification.showToast("Regisztráció...", "Felhasználói fiók létrehozása...", "info");
 
         if (window.SupabaseConnection && window.SupabaseConnection.isConfigured()) {
             try {
+                // A szerepkört SOHA nem a kliens határozza meg.
+                // Minden új regisztráló alapértelmezés szerint 'user' lesz.
+                // Az admin jogosultságot kizárólag adatbázisban lehet megadni.
                 const { data, error } = await window.SupabaseConnection.client.auth.signUp({
                     email,
                     password,
@@ -216,8 +229,7 @@ window.App = (function() {
                         data: {
                             full_name: fullName,
                             rank: rank,
-                            unit: unit,
-                            role: role
+                            unit: unit
                         }
                     }
                 });
@@ -227,66 +239,62 @@ window.App = (function() {
                     return;
                 }
 
-                if (data.user) {
-                    // Manual profile insert to guarantee profile sync
-                    const { error: profileError } = await window.SupabaseConnection.client
-                        .from('profiles')
-                        .upsert({
-                            id: data.user.id,
-                            email: email,
-                            full_name: fullName,
-                            rank: rank,
-                            unit: unit,
-                            role: role,
-                            xp: 0,
-                            badge: 'Újonc',
-                            path: 'Kezdő'
-                        });
+                // A profiles rekordot az auth.users trigger hozza létre.
+                // Email-confirmation esetén nincs aktív session, ezért itt nem léptetjük be a felhasználót.
+                if (data.user && !data.session) {
+                    window.Gamification.showToast(
+                        "Regisztráció sikeres",
+                        "Ellenőrizze a megadott e-mail-címét, majd a megerősítés után jelentkezzen be.",
+                        "success"
+                    );
+                } else if (data.user && data.session) {
+                    // Olyan Auth-konfiguráció esetén, ahol nincs email-megerősítés,
+                    // a létrehozott sessionből azonnal betöltjük a profilt.
+                    await window.Progress.loadFromSupabase(data.user.id);
+                    window.Progress.updateHeaderUI();
 
-                    if (profileError) {
-                        console.error(profileError);
+                    window.Gamification.showToast(
+                        "Fiók létrehozva",
+                        "Profil sikeresen létrehozva a felhőben!",
+                        "success"
+                    );
+
+                    const uState = window.Progress.getState();
+                    if (uState.user && uState.user.role === 'admin') {
+                        window.Navigation.showScreen('screen-teacher');
+                    } else {
+                        window.Navigation.showScreen('screen-diagnostic');
+                        window.Quiz.startDiagnostic();
                     }
-
-                    // Save local state copy
-                    const userData = {
-                        name: fullName,
-                        rank: rank,
-                        unit: unit,
-                        role: role,
-                        xp: 0,
-                        badge: 'Újonc',
-                        path: 'Kezdő'
-                    };
-                    window.Progress.setUser(userData);
-
-                    window.Gamification.showToast("Fiók létrehozva", "Profil sikeresen létrehozva a felhőben!", "success");
-                    
-                    // Switch to login automatically
-                    switchAuthTab('login');
-                    const loginEmail = document.getElementById('login-email');
-                    const loginPass = document.getElementById('login-password');
-                    if (loginEmail) loginEmail.value = email;
-                    if (loginPass) loginPass.value = password;
-
-                    // Immediately show diagnostic test
-                    window.Navigation.showScreen('screen-diagnostic');
-                    window.Quiz.startDiagnostic();
+                    return;
                 }
+
+                // Regisztráció után a bejelentkezési űrlapra váltunk.
+                switchAuthTab('login');
+                const loginEmail = document.getElementById('login-email');
+                const loginPass = document.getElementById('login-password');
+                if (loginEmail) loginEmail.value = email;
+                if (loginPass) loginPass.value = '';
             } catch (err) {
-                console.error(err);
-                window.Gamification.showToast("Kapcsolódási hiba", "Nem sikerült elérni a regisztrációs kiszolgálót.", "error");
+                console.error("Regisztrációs hiba:", err);
+                window.Gamification.showToast(
+                    "Kapcsolódási hiba",
+                    "Nem sikerült elérni a regisztrációs kiszolgálót.",
+                    "error"
+                );
             }
         } else {
-            // Offline fallback registration
+            // Offline fallback: admin szerepkör itt sem választható.
             const userData = {
                 name: fullName,
                 rank: rank,
                 unit: unit,
-                role: role,
+                role: 'user',
                 xp: 0,
                 badge: 'Újonc',
                 path: 'Kezdő'
             };
+
             window.Progress.setUser(userData);
             window.Gamification.showToast("Offline Regisztráció", "Profil elmentve helyben. Jó tanulást!", "success");
 
@@ -323,43 +331,50 @@ window.App = (function() {
     }
 
     /**
-     * Reset student's entire progress and return to Landing Screen
+     * Sign out without deleting cloud data.
+     * The local cache is cleared only to prevent the next user on the same
+     * browser from seeing the previous user's cached information.
      */
-    function resetData() {
-        const modal = document.getElementById('logout-confirm-modal');
-        if (modal) {
-            modal.classList.remove('hidden');
-        } else {
-            if (confirm("Biztosan törölni szeretné a teljes előrehaladását és ki szeretne jelentkezni?")) {
-                confirmResetData();
+    async function logout() {
+        try {
+            if (window.SupabaseConnection && window.SupabaseConnection.isConfigured()) {
+                const { error } = await window.SupabaseConnection.client.auth.signOut();
+                if (error) throw error;
             }
+        } catch (err) {
+            console.error("SignOut hiba:", err);
+            window.Gamification.showToast("Kijelentkezési hiba", "A kijelentkezés nem sikerült teljesen. Próbálja újra.", "error");
+            return;
         }
+
+        // Csak a böngészőben tárolt gyorsítótárat töröljük.
+        // A Supabase-ben lévő profil és eredmények NEM törlődnek.
+        window.Progress.reset();
+        window.Progress.updateHeaderUI();
+
+        const overlayContainer = document.getElementById('office-success-overlays');
+        if (overlayContainer) overlayContainer.innerHTML = '';
+
+        window.Gamification.showToast("Kijelentkezés sikeres", "A fiókból biztonságosan kijelentkezett. Az adatai megmaradtak.", "success");
+        window.Navigation.showScreen('screen-landing');
     }
 
     /**
-     * Confirms the reset from the custom modal
+     * Legacy compatibility function. This now means only logout and never
+     * deletes the user's cloud data.
+     */
+    async function resetData() {
+        await logout();
+    }
+
+    /**
+     * Legacy compatibility function retained for old markup/calls.
+     * It also performs only a normal logout; no cloud data is deleted.
      */
     async function confirmResetData() {
         const modal = document.getElementById('logout-confirm-modal');
         if (modal) modal.classList.add('hidden');
-
-        // Sign out from Supabase if configured
-        if (window.SupabaseConnection && window.SupabaseConnection.isConfigured()) {
-            try {
-                await window.SupabaseConnection.client.auth.signOut();
-            } catch (err) {
-                console.error("SignOut hiba:", err);
-            }
-        }
-
-        window.Progress.reset();
-        window.Progress.updateHeaderUI();
-        
-        const overlayContainer = document.getElementById('office-success-overlays');
-        if (overlayContainer) overlayContainer.innerHTML = '';
-        
-        window.Gamification.showToast("Kijelentkezés sikeres", "Sikeresen kijelentkezett és törölte a helyi gyorsítótárat.", "warning");
-        window.Navigation.showScreen('screen-landing');
+        await logout();
     }
 
     /**
@@ -731,6 +746,7 @@ window.App = (function() {
         init: init,
         selectRole: selectRole,
         saveProfile: saveProfile,
+        logout: logout,
         resetData: resetData,
         confirmResetData: confirmResetData,
         printReport: printReport,
