@@ -18,7 +18,7 @@ window.Progress = (function() {
         weaknesses: [] // ["Q3", "Q7"] questions they missed in quizzes
     };
 
-    let state = { ...defaultState };
+    let state = JSON.parse(JSON.stringify(defaultState));
 
     /**
      * Load the progress cache from LocalStorage (synchronous fallback)
@@ -52,56 +52,64 @@ window.Progress = (function() {
             return load();
         }
 
+        // Supabase módban minden belépésnél tiszta memóriából indulunk.
+        // Így egy korábbi felhasználó LocalStorage-cache-e nem keveredhet az aktuális fiókkal.
+        state = JSON.parse(JSON.stringify(defaultState));
+
         try {
-            // 1. Fetch profile from Supabase
+            // 1. Fetch the authenticated user's profile from Supabase.
             const { data: profile, error: profileError } = await window.SupabaseConnection.client
                 .from('profiles')
                 .select('*')
                 .eq('id', userId)
                 .single();
 
-            if (profileError) {
-                console.warn("Nem található meglévő profil a Supabase-ben, a bejelentkezési adatokból építkezünk.");
-            } else if (profile) {
-                state.user = {
-                    name: profile.full_name || '',
-                    rank: profile.rank || '',
-                    unit: profile.unit || '',
-                    role: profile.role || 'user',
-                    xp: profile.xp || 0,
-                    badge: profile.badge || 'Újonc',
-                    path: profile.path || 'Kezdő'
-                };
-                state.diagnosticScore = profile.diagnostic_score || null;
-                state.officeErrors = profile.office_errors || [];
-                state.escaperoomLocks = profile.escaperoom_locks || Array(8).fill(false);
-                state.weaknesses = profile.weaknesses || [];
+            if (profileError || !profile) {
+                console.error("A bejelentkezett felhasználóhoz nem található profiles rekord:", profileError);
+                return state;
             }
 
-            // 2. Fetch completed modules from results table
+            state.user = {
+                name: profile.full_name || '',
+                rank: profile.rank || '',
+                unit: profile.unit || '',
+                role: profile.role || 'user',
+                xp: Number(profile.xp) || 0,
+                badge: profile.badge || 'Újonc',
+                path: profile.path || 'Kezdő'
+            };
+            state.diagnosticScore = profile.diagnostic_score || null;
+            state.officeErrors = Array.isArray(profile.office_errors) ? profile.office_errors : [];
+            state.escaperoomLocks = Array.isArray(profile.escaperoom_locks) ? profile.escaperoom_locks : Array(8).fill(false);
+            state.weaknesses = Array.isArray(profile.weaknesses) ? profile.weaknesses : [];
+
+            // 2. Fetch completed modules from results table.
             const { data: results, error: resultsError } = await window.SupabaseConnection.client
                 .from('results')
                 .select('*')
                 .eq('user_id', userId);
 
-            if (results && !resultsError) {
-                state.completedModules = {};
-                results.forEach(row => {
-                    state.completedModules[row.module_id] = {
-                        xp: row.xp_awarded,
-                        score: row.score,
-                        total: row.total,
-                        date: row.completed_at ? row.completed_at.slice(0, 16).replace('T', ' ') : ''
-                    };
-                });
+            if (resultsError) {
+                console.error("Hiba az eredmények betöltésekor:", resultsError);
+                return state;
             }
 
-            // Save loaded data into localStorage for faster subsequent loads / offline backup
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            state.completedModules = {};
+            (results || []).forEach(row => {
+                state.completedModules[row.module_id] = {
+                    xp: Number(row.xp_awarded) || 0,
+                    score: Number(row.score) || 0,
+                    total: Number(row.total) || 0,
+                    date: row.completed_at ? row.completed_at.slice(0, 16).replace('T', ' ') : ''
+                };
+            });
 
+            // LocalStorage is cache only; Supabase remains the source of truth.
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         } catch (err) {
-            console.error("Hiba történt a felhőbeli adatok szinkronizációja közben:", err);
-            load(); // Fallback to offline cache
+            console.error("Hiba történt a felhőbeli adatok betöltése közben:", err);
+            // Intentionally do NOT fall back to the previous user's local cache in
+            // authenticated Supabase mode. This prevents cross-user data leakage.
         }
 
         return state;
@@ -125,13 +133,10 @@ window.Progress = (function() {
                 if (user) {
                     const { error } = await window.SupabaseConnection.client
                         .from('profiles')
-                        .upsert({
-                            id: user.id,
-                            email: user.email,
+                        .update({
                             full_name: state.user.name,
                             rank: state.user.rank,
                             unit: state.user.unit,
-                            role: state.user.role,
                             xp: state.user.xp,
                             badge: state.user.badge,
                             path: state.user.path,
@@ -139,7 +144,8 @@ window.Progress = (function() {
                             office_errors: state.officeErrors,
                             escaperoom_locks: state.escaperoomLocks,
                             weaknesses: state.weaknesses
-                        });
+                        })
+                        .eq('id', user.id);
 
                     if (error) {
                         console.error("Hiba a profil Supabase szinkronizációja során:", error);
@@ -172,7 +178,7 @@ window.Progress = (function() {
             name: userData.name || '',
             rank: userData.rank || '',
             unit: userData.unit || '',
-            role: userData.role || 'user',
+            role: userData.role === 'admin' ? 'admin' : 'user',
             xp: userData.xp || 0,
             badge: userData.badge || 'Újonc',
             path: userData.path || 'Kezdő'
