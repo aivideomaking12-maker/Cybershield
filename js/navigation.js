@@ -34,6 +34,15 @@ window.Navigation = (function() {
             return;
         }
 
+        // Az oktatói felület csak admin szerepkörrel érhető el.
+        if (screenId === 'screen-teacher') {
+            const state = window.Progress.getState();
+            if (!state.user || state.user.role !== 'admin') {
+                console.warn('Hozzáférés megtagadva: az oktatói felület csak admin jogosultsággal érhető el.');
+                screenId = state.user ? 'screen-map' : 'screen-landing';
+            }
+        }
+
         // Hide all screens
         ALL_SCREENS.forEach(id => {
             const el = document.getElementById(id);
@@ -76,6 +85,7 @@ window.Navigation = (function() {
     function onScreenActivated(screenId) {
         const state = window.Progress.getState();
         const isLoggedIn = !!state.user;
+        const isAdmin = isLoggedIn && state.user.role === 'admin';
 
         const navMap = document.getElementById('nav-btn-map');
         const navTeacher = document.getElementById('nav-btn-teacher');
@@ -83,7 +93,7 @@ window.Navigation = (function() {
 
         if (isLoggedIn) {
             if (navMap) navMap.classList.remove('hidden');
-            if (navTeacher) navTeacher.classList.remove('hidden');
+            if (navTeacher) navTeacher.classList.toggle('hidden', !isAdmin);
             if (logoutBtn) logoutBtn.classList.remove('hidden');
         } else {
             if (navMap) navMap.classList.add('hidden');
@@ -472,6 +482,7 @@ window.Navigation = (function() {
                 const { data: profiles, error: profilesError } = await window.SupabaseConnection.client
                     .from('profiles')
                     .select('*')
+                    .eq('role', 'user')
                     .order('xp', { ascending: false });
 
                 if (profilesError) {
