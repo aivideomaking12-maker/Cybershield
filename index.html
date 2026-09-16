@@ -65,7 +65,7 @@
                             <path d="m12 3-1.912 5.886H3.886L9 12.528l-1.912 5.886L12 14.792l5.088 3.622L15 12.528l5.114-4.642h-6.202L12 3z"/>
                         </svg>
                     </button>
-                    <button id="logout-btn" class="hidden p-2 text-slate-450 hover:text-red-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Kijelentkezés / Reset" onclick="App.resetData()" aria-label="Adatok törlése">
+                    <button id="logout-btn" class="hidden p-2 text-slate-450 hover:text-red-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Kijelentkezés" onclick="App.logout()" aria-label="Kijelentkezés">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                             <polyline points="16 17 21 12 16 7"/>
@@ -134,39 +134,30 @@
                         <input type="email" id="reg-email" required class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-4 py-2 text-xs outline-none transition-all placeholder:text-slate-700" placeholder="nev@kapitanysag.hu">
                     </div>
                     <div>
-                        <label for="reg-password" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Jelszó (min. 6 karakter)</label>
-                        <input type="password" id="reg-password" required minlength="6" class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-4 py-2 text-xs outline-none transition-all placeholder:text-slate-700" placeholder="••••••••">
+                        <label for="reg-password" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Jelszó (min. 12 karakter)</label>
+                        <input type="password" id="reg-password" required minlength="12" class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-4 py-2 text-xs outline-none transition-all placeholder:text-slate-700" placeholder="••••••••">
                     </div>
                     <div>
                         <label for="reg-name" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Teljes Név</label>
                         <input type="text" id="reg-name" required class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-4 py-2 text-xs outline-none transition-all placeholder:text-slate-700" placeholder="pl. Kovács János r. őrnagy">
                     </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label for="reg-rank" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Rendfokozat</label>
-                            <select id="reg-rank" required class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-3 py-2 text-xs outline-none transition-all cursor-pointer">
-                                <option value="" disabled selected>Válasszon...</option>
-                                <option value="Őrmester">Őrmester</option>
-                                <option value="Törzsőrmester">Törzsőrmester</option>
-                                <option value="Főtörzsőrmester">Főtörzsőrmester</option>
-                                <option value="Zászlós">Zászlós</option>
-                                <option value="Törzszászlós">Törzszászlós</option>
-                                <option value="Főtörzszászlós">Főtörzszászlós</option>
-                                <option value="Hadnagy">Hadnagy</option>
-                                <option value="Főhadnagy">Főhadnagy</option>
-                                <option value="Százados">Százados</option>
-                                <option value="Őrnagy">Őrnagy</option>
-                                <option value="Alesredes">Alesredes</option>
-                                <option value="Ezredes">Ezredes</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="reg-role" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Szerepkör</label>
-                            <select id="reg-role" required class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-3 py-2 text-xs outline-none transition-all cursor-pointer">
-                                <option value="user" selected>Tanuló</option>
-                                <option value="admin">Oktató / Admin</option>
-                            </select>
-                        </div>
+                    <div>
+                        <label for="reg-rank" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Rendfokozat</label>
+                        <select id="reg-rank" required class="w-full bg-slate-950 border border-slate-850 focus:border-cyan-500 text-slate-100 rounded-xl px-3 py-2 text-xs outline-none transition-all cursor-pointer">
+                            <option value="" disabled selected>Válasszon...</option>
+                            <option value="Őrmester">Őrmester</option>
+                            <option value="Törzsőrmester">Törzsőrmester</option>
+                            <option value="Főtörzsőrmester">Főtörzsőrmester</option>
+                            <option value="Zászlós">Zászlós</option>
+                            <option value="Törzszászlós">Törzszászlós</option>
+                            <option value="Főtörzszászlós">Főtörzszászlós</option>
+                            <option value="Hadnagy">Hadnagy</option>
+                            <option value="Főhadnagy">Főhadnagy</option>
+                            <option value="Százados">Százados</option>
+                            <option value="Őrnagy">Őrnagy</option>
+                            <option value="Alesredes">Alesredes</option>
+                            <option value="Ezredes">Ezredes</option>
+                        </select>
                     </div>
                     <div>
                         <label for="reg-unit" class="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-1">Szervezeti Egység</label>
