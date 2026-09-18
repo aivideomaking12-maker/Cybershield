@@ -440,3 +440,324 @@ header .max-w-7xl { max-width: 1500px; }
     .dashboard-badges-grid { grid-template-columns:repeat(6, 1fr); }
     .cyber-card { padding:13px; }
 }
+
+/* =========================================================
+   CYBERSHIELD 2.1 — VISUAL PARITY PASS
+   A cél: a command-center látványterv karakterének sokkal
+   szorosabb visszaadása valódi reszponzív elrendezéssel.
+   ========================================================= */
+
+.cyber-dashboard {
+    width: 100% !important;
+    max-width: 1480px !important;
+    position: relative;
+}
+
+.cyber-dashboard-heading {
+    padding-left: 0;
+    margin-bottom: 18px !important;
+}
+
+.cyber-dashboard-heading h2 {
+    font-size: clamp(28px, 2.2vw, 36px) !important;
+    line-height: 1.08;
+    text-shadow: 0 0 28px rgba(24,201,255,.08);
+}
+
+.cyber-dashboard-heading p {
+    max-width: 820px !important;
+    color: #6f8aa6 !important;
+}
+
+/* Desktop command-center geometry: wide map, substantial side rails. */
+@media (min-width: 1280px) {
+    #screen-map > .grid:first-of-type {
+        grid-template-columns: 250px minmax(0, 1fr) 320px !important;
+        gap: 18px !important;
+    }
+    #screen-map > .grid:first-of-type > .lg\:col-span-3.xl\:col-span-3 {
+        grid-column: auto !important;
+    }
+    #screen-map > .grid:first-of-type > .lg\:col-span-9.xl\:col-span-7 {
+        grid-column: auto !important;
+    }
+    #screen-map > .grid:last-of-type {
+        grid-template-columns: 1.1fr 1fr 1fr !important;
+    }
+}
+
+/* Left command rail */
+.cyber-sidebar {
+    min-width: 0;
+}
+
+.cyber-side-nav {
+    padding: 6px;
+    border: 1px solid rgba(64,153,255,.13);
+    border-radius: 15px;
+    background: linear-gradient(145deg, rgba(4,16,32,.92), rgba(2,8,19,.94));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 12px 32px rgba(0,0,0,.22);
+}
+
+.cyber-side-nav-item {
+    position: relative;
+    width: 100%;
+    min-height: 39px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 11px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    color: #89a2bc;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+    cursor: pointer;
+    transition: .22s ease;
+}
+
+.cyber-side-nav-item:hover {
+    color: #dff7ff;
+    background: rgba(15,53,82,.45);
+    border-color: rgba(24,201,255,.18);
+    transform: translateX(2px);
+}
+
+.cyber-side-nav-item.active {
+    color: #59dcff;
+    background: linear-gradient(90deg, rgba(18,115,170,.28), rgba(8,43,70,.45));
+    border-color: rgba(24,201,255,.18);
+    box-shadow: inset 3px 0 0 #18c9ff, 0 0 22px rgba(24,201,255,.06);
+}
+
+.cyber-side-nav-icon {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 22px;
+    border-radius: 7px;
+    border: 1px solid rgba(83,142,185,.2);
+    background: rgba(3,14,27,.65);
+    color: #6e8ca8;
+    font: 800 14px/1 monospace;
+}
+
+.cyber-side-nav-item.active .cyber-side-nav-icon {
+    color: #55dcff;
+    border-color: rgba(24,201,255,.3);
+    box-shadow: 0 0 12px rgba(24,201,255,.08);
+}
+
+/* Make the existing progress card feel like a premium status module. */
+.cyber-sidebar > .bg-slate-950 {
+    background: linear-gradient(145deg, rgba(4,16,32,.95), rgba(2,8,19,.96)) !important;
+    border: 1px solid rgba(64,153,255,.18) !important;
+    border-radius: 15px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 14px 36px rgba(0,0,0,.25);
+}
+
+/* Map frame: deeper, brighter and more dimensional. */
+.cyber-map-shell {
+    min-width: 0;
+    padding: 12px !important;
+    border-radius: 18px !important;
+    background:
+        radial-gradient(circle at 48% 45%, rgba(0,134,210,.08), transparent 42%),
+        linear-gradient(145deg, rgba(5,18,38,.98), rgba(1,7,17,.99)) !important;
+    border-color: rgba(72,145,207,.32) !important;
+    box-shadow:
+        0 28px 70px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.045),
+        0 0 45px rgba(0,110,190,.045) !important;
+}
+
+.cyber-map-shell:after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(46,122,183,.09);
+    border-radius: 13px;
+    pointer-events: none;
+}
+
+.cyber-map-shell > .relative {
+    border-color: rgba(46,123,184,.25) !important;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(10,86,136,.09), transparent 48%),
+        linear-gradient(rgba(31,108,169,.065) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,108,169,.065) 1px, transparent 1px),
+        #020916 !important;
+    background-size: auto, 22px 22px, 22px 22px, auto !important;
+    box-shadow: inset 0 0 50px rgba(0,89,150,.07);
+}
+
+#station-blueprint {
+    filter: drop-shadow(0 12px 26px rgba(0,0,0,.34));
+}
+
+/* Dynamic room colors remain driven by Navigation.js attributes. */
+#station-blueprint .map-room .room-rect {
+    transition: fill .25s ease, stroke .25s ease, filter .25s ease, opacity .25s ease;
+}
+
+#station-blueprint .map-room .room-rect[stroke="#f4af23"] {
+    filter: drop-shadow(0 0 13px rgba(244,175,35,.34));
+}
+
+#station-blueprint .map-room .room-rect[stroke="#30bced"] {
+    filter: drop-shadow(0 0 16px rgba(48,188,237,.38));
+}
+
+#station-blueprint .map-room .room-rect[stroke="#10b981"] {
+    filter: drop-shadow(0 0 13px rgba(16,185,129,.3));
+}
+
+#station-blueprint .map-room:hover .room-rect {
+    filter: brightness(1.12) drop-shadow(0 0 22px currentColor) !important;
+}
+
+#station-blueprint .map-room:hover {
+    cursor: pointer;
+}
+
+/* Right rail = intelligence stack, visually closer to the concept art. */
+.cyber-map-right-rail {
+    gap: 12px !important;
+}
+
+.cyber-card {
+    padding: 17px !important;
+    border-radius: 15px !important;
+    border-color: rgba(64,153,255,.23) !important;
+    background:
+        linear-gradient(145deg, rgba(5,19,39,.94), rgba(2,9,21,.96)) !important;
+    box-shadow: 0 16px 38px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.cyber-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(24,201,255,.36) !important;
+}
+
+.cyber-next-card {
+    background:
+        radial-gradient(circle at 85% 15%, rgba(24,201,255,.10), transparent 34%),
+        linear-gradient(145deg, rgba(5,28,48,.97), rgba(2,10,22,.98)) !important;
+    box-shadow: 0 18px 42px rgba(0,0,0,.3), 0 0 28px rgba(24,201,255,.035);
+}
+
+.cyber-primary-btn {
+    height: 39px !important;
+    border-radius: 9px !important;
+    font-size: 10px !important;
+    letter-spacing: .13em !important;
+}
+
+.cyber-progress-card {
+    min-height: 150px;
+}
+
+.cyber-rank-card {
+    min-height: 92px;
+}
+
+/* Bottom intelligence row */
+#screen-map > .grid:last-of-type {
+    margin-top: 14px !important;
+    align-items: stretch;
+}
+
+#screen-map > .grid:last-of-type > .cyber-card {
+    min-height: 138px;
+}
+
+.dashboard-result-row {
+    min-height: 48px;
+}
+
+.dashboard-badge {
+    border-radius: 11px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+.training-status-icon {
+    box-shadow: 0 0 20px rgba(24,201,255,.08);
+}
+
+/* Header: more like a command console instead of a generic website header. */
+header .max-w-7xl {
+    height: 70px !important;
+}
+
+header .flex.items-center.space-x-3.cursor-pointer svg {
+    width: 34px;
+    height: 34px;
+}
+
+#header-user-status {
+    min-height: 43px;
+    padding: 6px 11px !important;
+    border-radius: 12px !important;
+}
+
+/* Fine-grained responsive behavior. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    #screen-map > .grid:first-of-type {
+        grid-template-columns: 205px minmax(0,1fr) 255px !important;
+        gap: 12px !important;
+    }
+    #screen-map > .grid:first-of-type > .lg\:col-span-3.xl\:col-span-3,
+    #screen-map > .grid:first-of-type > .lg\:col-span-9.xl\:col-span-7 {
+        grid-column: auto !important;
+    }
+    #screen-map > .grid:last-of-type {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    #screen-map > .grid:last-of-type > .cyber-card:last-child {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 1023px) {
+    .cyber-dashboard-heading {
+        margin-bottom: 14px !important;
+    }
+    .cyber-map-shell {
+        order: 1;
+    }
+    .cyber-sidebar {
+        order: 0;
+    }
+    .cyber-map-right-rail {
+        order: 2;
+    }
+}
+
+@media (max-width: 640px) {
+    header .max-w-7xl {
+        height: 60px !important;
+    }
+    .cyber-dashboard-heading h2 {
+        font-size: 24px !important;
+    }
+    .cyber-side-nav {
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+        gap: 4px;
+    }
+    .cyber-side-nav-item {
+        font-size: 10px;
+    }
+    .cyber-map-shell {
+        padding: 7px !important;
+    }
+    #screen-map > .grid:last-of-type {
+        grid-template-columns: 1fr !important;
+    }
+    #screen-map > .grid:last-of-type > .cyber-card:last-child {
+        grid-column: auto;
+    }
+}
