@@ -13,66 +13,6 @@ window.App = (function() {
     async function init() {
         console.log("CyberShield program inicializálása...");
         
-        // Update UI status banner based on Supabase Connection
-        const statusDot = document.getElementById('supabase-status-dot');
-        const statusText = document.getElementById('supabase-status-text');
-
-        if (window.SupabaseConnection && window.SupabaseConnection.isConfigured()) {
-            if (statusDot) {
-                statusDot.className = "w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1 animate-pulse";
-            }
-            if (statusText) {
-                statusText.innerText = "Supabase felhő-szinkronizált mód aktív.";
-            }
-
-            try {
-                const { data: { session } } = await window.SupabaseConnection.client.auth.getSession();
-                if (session) {
-                    await window.Progress.loadFromSupabase(session.user.id);
-                    window.Progress.updateHeaderUI();
-                    
-                    const activeScreen = document.querySelector('.active-screen');
-                    if (!activeScreen || activeScreen.id === 'screen-landing' || activeScreen.id === 'screen-profile') {
-                        const uState = window.Progress.getState();
-                        if (uState.user && uState.user.role === 'admin') {
-                            window.Navigation.showScreen('screen-teacher');
-                        } else {
-                            window.Navigation.showScreen('screen-map');
-                        }
-                    }
-                } else {
-                    window.Navigation.showScreen('screen-landing');
-                }
-            } catch (err) {
-                console.error("Session ellenőrzési hiba:", err);
-                window.Navigation.showScreen('screen-landing');
-            }
-        } else {
-            if (statusDot) {
-                statusDot.className = "w-2 h-2 rounded-full bg-amber-500 inline-block mr-1";
-            }
-            if (statusText) {
-                statusText.innerText = "Supabase nincs konfigurálva. Helyi LocalStorage üzemmód (Offline) aktív.";
-            }
-
-            const state = window.Progress.load();
-            window.Progress.updateHeaderUI();
-
-            if (state.user) {
-                if (state.user.role === 'admin') {
-                    window.Navigation.showScreen('screen-teacher');
-                } else {
-                    window.Navigation.showScreen('screen-map');
-                }
-            } else {
-                window.Navigation.showScreen('screen-landing');
-            }
-        }
-
-        setupKeyboardNavigation();
-    }
-
-    let keyboardNavSetup = false;
     /**
      * Spatial keyboard navigation for accessibility compliance
      */
