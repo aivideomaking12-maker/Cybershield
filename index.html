@@ -43,34 +43,23 @@
 
                 <!-- Navigation Controls -->
                 <nav class="flex items-center space-x-1.5" role="navigation" aria-label="Fő navigáció">
-                    <button id="nav-btn-map" class="hidden p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Kapitányság Alaprajz" onclick="Navigation.showScreen('screen-map')" aria-label="Térkép megnyitása">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <line x1="9" y1="3" x2="9" y2="21"/>
-                            <line x1="15" y1="3" x2="15" y2="21"/>
-                            <line x1="3" y1="9" x2="21" y2="9"/>
-                            <line x1="3" y1="15" x2="21" y2="15"/>
-                        </svg>
+                    <button id="nav-btn-map" class="hidden p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Kiképző központ" onclick="Navigation.showScreen('screen-map')" aria-label="Kiképző központ">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+                    </button>
+                    <button id="nav-btn-scenarios" class="hidden p-2 text-slate-400 hover:text-purple-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Szituációs gyakorlatok" onclick="Navigation.showScreen('screen-scenarios')" aria-label="Szituációs gyakorlatok">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-5"/></svg>
                     </button>
                     <button id="nav-btn-teacher" class="hidden p-2 text-slate-400 hover:text-amber-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Oktatói Felület" onclick="Navigation.showScreen('screen-teacher')" aria-label="Oktatói felület">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     </button>
-                    <button id="nav-btn-future" class="p-2 text-slate-400 hover:text-purple-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Jövőbeli Fejlesztések" onclick="Navigation.showScreen('screen-future')" aria-label="Útiterv">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m12 3-1.912 5.886H3.886L9 12.528l-1.912 5.886L12 14.792l5.088 3.622L15 12.528l5.114-4.642h-6.202L12 3z"/>
-                        </svg>
+                    <button id="theme-toggle" class="p-2 text-slate-400 hover:text-amber-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Világos / sötét téma" onclick="Navigation.toggleTheme()" aria-label="Világos / sötét téma">
+                        <svg id="theme-toggle-icon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                    </button>
+                    <button id="back-btn" class="hidden p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Vissza" onclick="Navigation.goBack()" aria-label="Vissza">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/><path d="M9 12h11"/></svg>
                     </button>
                     <button id="logout-btn" class="hidden p-2 text-slate-450 hover:text-red-400 hover:bg-slate-900/50 rounded-lg transition-all cursor-pointer focus:outline-none" title="Kijelentkezés" onclick="App.logout()" aria-label="Kijelentkezés">
-                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                     </button>
                 </nav>
             </div>
@@ -261,99 +250,31 @@
         <!-- SCREEN 4: POLICE STATION MAP / FŐMENÜ (MAP) -->
         <!-- ============================================== -->
         <section id="screen-map" class="hidden transition-all duration-500 w-full max-w-[1500px] mx-auto cyber-dashboard">
-            <div class="text-left mb-5 cyber-dashboard-heading">
-                <span class="text-[10px] font-mono font-bold text-cyan-500 uppercase tracking-[0.2em]">RENDŐRKAPITÁNYSÁG ALAPRAJZ</span>
-                <h2 class="text-3xl font-black text-white mt-1">Rendőrségi Kiberbiztonsági Kiképző Központ</h2>
-                <div class="mt-2.5 flex items-center justify-start space-x-2">
-                    <span class="px-2.5 py-1 bg-slate-900/80 rounded-lg border border-slate-800 text-[10px] font-mono flex items-center space-x-2">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span class="text-slate-400 uppercase tracking-wider">Kapitánysági rend: Érvényes</span>
-                    </span>
-                </div>
-                <p class="text-slate-400 text-xs mt-2 max-w-3xl">
-                    Kattintson az alaprajz valamelyik kiemelt helyiségére a biztonsági szint felméréséhez és a modul elméleti anyagainak átvizsgálásához.
-                </p>
+    <div class="text-left mb-5 cyber-dashboard-heading">
+        <span class="text-[10px] font-mono font-bold text-cyan-500 uppercase tracking-[0.2em]">RENDŐRKAPITÁNYSÁG ALAPRAJZ</span>
+        <h2 class="text-3xl font-black text-white mt-1">Rendőrségi Kiberbiztonsági Kiképző Központ</h2>
+        <div class="mt-2.5 flex items-center justify-start space-x-2">
+            <span class="px-2.5 py-1 bg-slate-900/80 rounded-lg border border-slate-800 text-[10px] font-mono flex items-center space-x-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span class="text-slate-400 uppercase tracking-wider">Kapitánysági rend: Érvényes</span></span>
+        </div>
+        <p class="text-slate-400 text-xs mt-2 max-w-3xl">Kattintson az alaprajz valamelyik kiemelt helyiségére a biztonsági szint felméréséhez és a modul elméleti anyagainak átvizsgálásához.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start">
+        <aside class="lg:col-span-3 xl:col-span-2 space-y-3 cyber-sidebar">
+            <nav class="cyber-side-nav" aria-label="Kiképzési navigáció">
+                <button class="cyber-side-nav-item active" type="button" onclick="Navigation.showScreen('screen-map')"><span class="cyber-side-nav-icon">⌂</span><span>Kiképző központ</span></button>
+                <button class="cyber-side-nav-item" type="button" onclick="Navigation.showScreen('screen-scenarios')"><span class="cyber-side-nav-icon">◎</span><span>Szituációs gyakorlatok</span></button>
+            </nav>
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850">
+                <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Tanulmányi helyiségek</h4>
+                <div id="map-sidebar-modules" class="space-y-2"></div>
             </div>
+        </aside>
 
-            <!-- Interaktív Alaprajz (Interactive Map Canvas/Container) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start">
-                <!-- Map Left: Command-center navigation + module progress -->
-                <div class="lg:col-span-3 xl:col-span-2 space-y-3 cyber-sidebar">
-                    <nav class="cyber-side-nav" aria-label="Kiképzési navigáció">
-                        <button class="cyber-side-nav-item active" type="button" onclick="Navigation.showScreen('screen-map')">
-                            <span class="cyber-side-nav-icon">⌂</span><span>Kiképző központ</span>
-                        </button>
-                        <button class="cyber-side-nav-item" type="button" onclick="Navigation.showScreen('screen-escaperoom')">
-                            <span class="cyber-side-nav-icon">◎</span><span>Szituációs gyakorlatok</span>
-                        </button>
-                        <button class="cyber-side-nav-item" type="button" onclick="document.getElementById('dashboard-results-card')?.scrollIntoView({behavior:'smooth',block:'center'})">
-                            <span class="cyber-side-nav-icon">▥</span><span>Eredményeim</span>
-                        </button>
-                        <button class="cyber-side-nav-item" type="button" onclick="document.getElementById('dashboard-badges-card')?.scrollIntoView({behavior:'smooth',block:'center'})">
-                            <span class="cyber-side-nav-icon">◇</span><span>Jelvényeim</span>
-                        </button>
-                    </nav>
-
-                    <!-- Progress widget with SVG circle diagram -->
-                    <div class="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex flex-col items-center text-center">
-                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4">Teljes Tanfolyam Progress</h4>
-                        
-                        <!-- SVG circle progress -->
-                        <div class="relative w-28 h-28 flex items-center justify-center">
-                            <svg class="w-24 h-24 progress-ring" viewBox="0 0 100 100">
-                                <circle class="text-slate-900" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
-                                <circle id="overall-progress-circle" class="text-cyan-500 progress-ring__circle" stroke-width="8" stroke-dasharray="251.2 251.2" stroke-dashoffset="251.2" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
-                            </svg>
-                            <span id="overall-progress-percentage" class="absolute text-lg font-black text-white font-mono">0%</span>
-                        </div>
-                        
-                        <p id="overall-progress-summary" class="text-xs font-bold text-slate-300 mt-4">0 / 5 Helyiség Auditálva</p>
-                        <p class="text-[9px] text-slate-500 mt-1">Az összes audit sikeres elvégzése után a Cyber Guardian jelvény automatikusan kiadásra kerül.</p>
-                    </div>
-
-                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-850">
-                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Tanulmányi Helyiségek</h4>
-                        <div id="map-sidebar-modules" class="space-y-2">
-                            <!-- Populated by JS -->
-                        </div>
-                    </div>
-
-                    <!-- Escape Room Quick Access -->
-                    <div class="bg-gradient-to-br from-red-950/20 to-slate-950 border border-red-900/30 p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:border-red-500/40 transition-all" onclick="Navigation.showScreen('screen-escaperoom')" role="button" aria-label="Kiszabadulós szoba speciális kihívás">
-                        <div class="space-y-1">
-                            <span class="text-[9px] font-bold text-red-500 uppercase tracking-wider font-mono">Szigorított kihívás</span>
-                            <h4 class="text-xs font-extrabold text-slate-200 group-hover:text-red-400 transition-colors">Kiszabadulós Szoba</h4>
-                            <p class="text-[9px] text-slate-500">8 elméleti lakat kibontása a kijutáshoz</p>
-                        </div>
-                        <svg class="w-7 h-7 text-red-900 group-hover:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-
-                    <!-- Office Error Finder (Extra Task) Quick Access -->
-                    <div class="bg-gradient-to-br from-purple-950/20 to-slate-950 border border-purple-900/30 p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:border-purple-500/40 transition-all" onclick="Navigation.showScreen('screen-office-errors')" role="button" aria-label="Irodai hiba kereső gyakorlati audit">
-                        <div class="space-y-1">
-                            <span class="text-[9px] font-bold text-purple-400 uppercase tracking-wider font-mono">Gyakorlati audit</span>
-                            <h4 class="text-xs font-extrabold text-slate-200 group-hover:text-purple-400 transition-colors">Irodai Hiba-Kereső</h4>
-                            <p class="text-[9px] text-slate-500">Keresse meg a 15 nyitott biztonsági rést</p>
-                        </div>
-                        <svg class="w-7 h-7 text-purple-900 group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Map Right: Interactive SVG Blueprint Blueprint grid -->
-                <div class="lg:col-span-9 xl:col-span-7 cyber-map-shell bg-slate-950 p-3 sm:p-4 rounded-2xl relative shadow-2xl border border-slate-850">
-
-                    <!-- Blueprint Wrapper -->
-                    <div class="relative w-full overflow-hidden aspect-[4/3] rounded-xl bg-slate-950 border border-slate-900 p-1">
-                        <!-- Blueprint grid pattern background -->
-                        <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style="background-image: linear-gradient(#30bced 1px, transparent 1px), linear-gradient(90deg, #30bced 1px, transparent 1px); background-size: 24px 24px;"></div>
-
-                        <!-- Main Interactive SVG map -->
-                        <svg id="station-blueprint" class="w-full h-full select-none" viewBox="0 0 800 600" aria-label="Rendőrkapitányság interaktív alaprajza">
+        <div class="lg:col-span-7 xl:col-span-8 cyber-map-shell bg-slate-950 p-3 sm:p-4 rounded-2xl relative shadow-2xl border border-slate-850">
+            <div class="relative w-full overflow-hidden aspect-[4/3] rounded-xl bg-slate-950 border border-slate-900 p-1">
+                <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style="background-image: linear-gradient(#30bced 1px, transparent 1px), linear-gradient(90deg, #30bced 1px, transparent 1px); background-size: 24px 24px;"></div>
+                <svg id="station-blueprint" class="w-full h-full select-none" viewBox="0 0 800 600" aria-label="Rendőrkapitányság interaktív alaprajza">
                             <!-- Background blueprint outer walls with blueprint architectural style -->
                             <rect x="20" y="20" width="760" height="560" fill="none" stroke="#101a30" stroke-width="4" rx="8"/>
                             <rect x="23" y="23" width="754" height="554" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-opacity="0.25" rx="6"/>
@@ -479,83 +400,44 @@
                                 <rect x="571" y="394" width="18" height="5" rx="1" fill="none" stroke="#38bdf8" stroke-width="1.2"/>
                             </g>
                         </svg>
-                    </div>
+            </div>
+            <div class="mt-4 flex flex-wrap gap-4 items-center justify-between text-[11px] text-slate-400 font-medium">
+                <div class="flex flex-wrap gap-3"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-cyan-950 border border-cyan-500"></span>Kijelölt modul</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-slate-900 border border-slate-700"></span>Zárt</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-emerald-950 border border-emerald-500"></span>Teljesítve</span><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-amber-950 border border-amber-500"></span>100% Kiváló</span></div>
+                <span class="font-mono text-[9px] text-slate-500">TACTICAL FLOORPLAN // LIVE</span>
+            </div>
+        </div>
 
-                    <!-- Legend -->
-                    <div class="mt-4 flex flex-wrap gap-4 items-center justify-between text-[11px] text-slate-400 font-medium">
-                        <div class="flex space-x-3">
-                            <span class="flex items-center space-x-1.5">
-                                <span class="w-2.5 h-2.5 rounded bg-cyan-950 border border-cyan-500 inline-block"></span>
-                                <span>Kijelölt modul</span>
-                            </span>
-                            <span class="flex items-center space-x-1.5">
-                                <span class="w-2.5 h-2.5 rounded bg-[#0f172a] border border-slate-700 inline-block"></span>
-                                <span>Nem elkezdett / Zárt</span>
-                            </span>
-                            <span class="flex items-center space-x-1.5">
-                                <span class="w-2.5 h-2.5 rounded bg-emerald-950 border border-emerald-500 inline-block"></span>
-                                <span>Teljesítve</span>
-                            </span>
-                            <span class="flex items-center space-x-1.5">
-                                <span class="w-2.5 h-2.5 rounded bg-amber-950 border border-amber-500 inline-block"></span>
-                                <span>100% Kiváló</span>
-                            </span>
-                        </div>
-                        <span class="font-mono text-[9px] text-slate-500">Billentyűzet támogatás: Alt+H: Térkép • CyberShield v1.0</span>
-                    </div>
-                </div>
-        <!-- RIGHT DASHBOARD RAIL + BOTTOM INTELLIGENCE -->
-        <div class="cyber-map-right-rail lg:col-span-3 xl:col-span-3 space-y-3" aria-label="Kiképzési állapot">
+        <aside class="cyber-map-right-rail lg:col-span-2 xl:col-span-2 space-y-3" aria-label="Teljesítés">
             <div class="cyber-card cyber-progress-card">
                 <div class="cyber-card-title">TELJESÍTÉS <span class="cyber-live-dot"></span></div>
                 <div class="flex items-center gap-4 mt-3">
-                    <div class="relative w-20 h-20 flex-shrink-0">
-                        <svg class="w-20 h-20 progress-ring" viewBox="0 0 100 100">
-                            <circle class="text-slate-900" stroke-width="9" stroke="currentColor" fill="transparent" r="39" cx="50" cy="50"/>
-                            <circle id="dashboard-progress-circle" class="text-cyan-400 progress-ring__circle" stroke-width="9" stroke-dasharray="245 245" stroke-dashoffset="245" stroke-linecap="round" stroke="currentColor" fill="transparent" r="39" cx="50" cy="50"/>
-                        </svg>
-                        <span id="dashboard-progress-percentage" class="absolute inset-0 flex items-center justify-center text-base font-black font-mono">0%</span>
-                    </div>
+                    <div class="relative w-20 h-20 flex-shrink-0"><svg class="w-20 h-20 progress-ring" viewBox="0 0 100 100"><circle class="text-slate-900" stroke-width="9" stroke="currentColor" fill="transparent" r="39" cx="50" cy="50"/><circle id="dashboard-progress-circle" class="text-cyan-400 progress-ring__circle" stroke-width="9" stroke-dasharray="245 245" stroke-dashoffset="245" stroke-linecap="round" stroke="currentColor" fill="transparent" r="39" cx="50" cy="50"/></svg><span id="dashboard-progress-percentage" class="absolute inset-0 flex items-center justify-center text-base font-black font-mono">0%</span></div>
                     <div><div id="dashboard-progress-summary" class="text-lg font-black text-white">0 / 5</div><div class="text-[10px] text-slate-500 uppercase tracking-wider">helyiség auditálva</div></div>
                 </div>
                 <div class="dashboard-progress-dots" id="dashboard-progress-dots"></div>
             </div>
+        </aside>
+    </div>
+</section>
 
-            <div class="cyber-card cyber-next-card">
-                <div class="cyber-card-title text-cyan-300">KÖVETKEZŐ FELADAT</div>
-                <div class="cyber-next-inner mt-3">
-                    <div id="dashboard-next-icon" class="cyber-next-icon">01</div>
-                    <div class="min-w-0 flex-1">
-                        <div id="dashboard-next-title" class="text-sm font-black text-white truncate">Információbiztonsági alapok</div>
-                        <div id="dashboard-next-subtitle" class="text-[10px] text-slate-500 mt-0.5">1. PORTA</div>
-                        <div class="mt-2 h-1.5 rounded-full bg-slate-900 overflow-hidden"><div id="dashboard-next-bar" class="h-full rounded-full bg-cyan-400" style="width:0%"></div></div>
-                        <div id="dashboard-next-percent" class="text-[9px] font-mono text-cyan-400 mt-1">Kezdésre vár</div>
-                    </div>
+        <!-- ============================================== -->
+        <!-- SCREEN 5: SZITUÁCIÓS GYAKORLATOK -->
+        <!-- ============================================== -->
+        <section id="screen-scenarios" class="hidden transition-all duration-500 w-full max-w-[1180px] mx-auto">
+            <div class="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden">
+                <div class="flex items-start justify-between gap-4 mb-7 border-b border-slate-800 pb-5">
+                    <div><span class="text-[10px] font-bold text-purple-400 uppercase tracking-[0.18em] font-mono">GYAKORLATI KIKÉPZÉS</span><h2 class="text-2xl sm:text-3xl font-black text-white mt-1">Szituációs gyakorlatok</h2><p class="text-xs text-slate-500 mt-2 max-w-2xl">Valós szolgálati helyzeteket modellező feladatok. Válasszon gyakorlatot a kezdéshez.</p></div>
+                    <button class="back-inline-btn" onclick="Navigation.goBack()" type="button">← Vissza</button>
                 </div>
-                <button id="dashboard-next-button" onclick="Navigation.enterModule(1)" class="cyber-primary-btn w-full mt-3">BELÉPÉS <span>→</span></button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <button class="scenario-card scenario-red" type="button" onclick="Navigation.showScreen('screen-escaperoom')">
+                        <div class="scenario-card-icon">🔐</div><div class="scenario-card-content"><span class="scenario-kicker">SZIGORÍTOTT KIHÍVÁS</span><h3>Kiszabadulós szoba</h3><p>8 kiberbiztonsági zár megfejtése és a helyes szolgálati döntések meghozatala.</p><div class="scenario-meta"><span>8 szituáció</span><span>XP JUTALOM</span></div></div><span class="scenario-arrow">→</span>
+                    </button>
+                    <button class="scenario-card scenario-purple" type="button" onclick="Navigation.showScreen('screen-office-errors')">
+                        <div class="scenario-card-icon">⌕</div><div class="scenario-card-content"><span class="scenario-kicker">GYAKORLATI AUDIT</span><h3>Irodai hiba-kereső</h3><p>Keresse meg egy rendőrségi iroda 15 információbiztonsági szabálytalanságát.</p><div class="scenario-meta"><span>15 hiba</span><span>+20 XP / TALÁLAT</span></div></div><span class="scenario-arrow">→</span>
+                    </button>
+                </div>
             </div>
-
-            <div class="cyber-card">
-                <div class="cyber-card-title">GYORS INFORMÁCIÓ</div>
-                <div class="cyber-info-row"><span>Aktuális rang</span><strong id="dashboard-rank">Újonc</strong></div>
-                <div class="cyber-info-row"><span>Következő rang</span><strong id="dashboard-next-rank">Kiképzett Járőrtárs</strong></div>
-                <div class="h-1.5 bg-slate-900 rounded-full overflow-hidden mt-2"><div id="dashboard-xp-bar" class="h-full bg-cyan-400 rounded-full" style="width:0%"></div></div>
-                <div class="flex justify-between mt-1 text-[9px] font-mono text-slate-600"><span id="dashboard-xp-current">0 XP</span><span id="dashboard-xp-target">100 XP</span></div>
-            </div>
-
-            <div class="cyber-card cyber-rank-card">
-                <div class="flex items-center gap-3"><div class="cyber-rank-emblem">✦</div><div class="min-w-0"><div class="text-[9px] text-slate-500 uppercase tracking-wider">KÖVETKEZŐ RANG</div><div id="dashboard-rank-large" class="text-base font-black text-white">Kiképzett Járőrtárs</div></div></div>
-                <div id="dashboard-rank-copy" class="text-[9px] text-slate-500 mt-3">100 XP szükséges a következő szinthez.</div>
-            </div>
-        </div>
-            </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-            <div id="dashboard-results-card" class="cyber-card"><div class="cyber-card-title flex items-center justify-between">LEGUTÓBBI EREDMÉNYEIM <span class="text-[9px] text-cyan-400">TELJESÍTMÉNY</span></div><div id="dashboard-latest-results" class="space-y-2 mt-3"></div></div>
-            <div id="dashboard-badges-card" class="cyber-card"><div class="cyber-card-title flex items-center justify-between">JELVÉNYEIM <span id="dashboard-badge-count" class="badge-count">0 / 12</span></div><div id="dashboard-badges" class="dashboard-badges-grid mt-3"></div></div>
-            <div class="cyber-card"><div class="cyber-card-title">KÉPZÉSI ÁLLAPOT</div><div class="training-status mt-3"><div class="training-status-icon">🛡</div><div class="min-w-0 flex-1"><div id="dashboard-status-title" class="font-black text-white text-sm">Kapitánysági kiképzés folyamatban</div><div id="dashboard-status-copy" class="text-[10px] text-slate-500 mt-1">Folytassa a következő kijelölt modullal.</div></div></div><div class="flex flex-wrap gap-2 mt-3"><span class="status-chip status-chip-cyan">● RENDSZER AKTÍV</span><span class="status-chip">● ADATOK SZINKRONIZÁLVA</span></div></div>
-        </div>
-
         </section>
 
         <!-- ============================================== -->
@@ -587,351 +469,47 @@
         <!-- ============================================== -->
         <!-- SCREEN 6: EXTRA TASK: OFFICE ERROR FINDER -->
         <!-- ============================================== -->
-        <section id="screen-office-errors" class="hidden transition-all duration-500 w-full max-w-5xl mx-auto">
-            <div class="glass-panel p-6 sm:p-8 rounded-2xl shadow-2xl">
-                <!-- Top details with precise white and purple text -->
-                <div class="flex flex-col sm:flex-row items-center justify-between mb-6 border-b border-purple-950 pb-4 gap-4">
-                    <div class="text-left">
-                        <span class="text-xs font-bold text-purple-400 uppercase tracking-widest font-mono">GYAKORLATI HELYSZÍNI AUDIT</span>
-                    </div>
-                    <div class="text-center">
-                        <h2 class="text-xl font-black text-white">Találja meg a 15 biztonsági rést!</h2>
-                    </div>
-                    <div class="flex items-center gap-3 font-mono flex-shrink-0">
-                        <span class="text-xs font-bold text-white" id="office-errors-counter">Megtalált hibák: 0 / 15</span>
-                        <div class="flex flex-col items-center">
-                            <div class="w-32 bg-slate-950 h-2.5 rounded-full overflow-hidden border border-purple-900/40 relative">
-                                <div class="bg-purple-600 h-full w-[0%] transition-all duration-500" id="office-errors-bar"></div>
-                            </div>
-                            <!-- Professionally designed green checkmark icon positioned just below it (to denote completion) -->
-                            <div class="mt-1 flex items-center justify-center text-emerald-400" id="office-completion-checkmark" title="Teljesítve">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle"><circle cx="12" cy="12" r="10" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/><path d="m9 12 2 2 4-4"/></svg>
-                            </div>
-                        </div>
-                    </div>
+        <section id="screen-office-errors" class="hidden transition-all duration-500 w-full max-w-[1280px] mx-auto">
+    <div class="glass-panel p-5 sm:p-7 rounded-2xl shadow-2xl office-audit-page">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-5 border-b border-slate-800 pb-5">
+            <div><span class="text-[10px] font-bold text-purple-400 uppercase tracking-[0.18em] font-mono">GYAKORLATI AUDIT // IRODA</span><h2 class="text-2xl sm:text-3xl font-black text-white mt-1">Irodai hiba-kereső</h2><p class="text-xs text-slate-500 mt-2 max-w-3xl">Vizsgálja át az irodát, és kattintson a látható információbiztonsági szabálytalanságokra. Összesen <strong class="text-purple-300">15 hiba</strong> található.</p></div>
+            <div class="flex items-center gap-2"><button class="back-inline-btn" onclick="Navigation.goBack()" type="button">← Vissza</button><button onclick="Quiz.resetOfficeErrorFinder()" class="office-reset-btn" type="button">Audit újraindítása</button></div>
+        </div>
+
+        <div class="office-audit-layout">
+            <div class="office-scene-wrap">
+                <div class="office-scene" id="office-interactive-scene" aria-label="Interaktív rendőrségi iroda, 15 keresendő biztonsági hibával">
+                    <div class="office-wall-grid"></div><div class="office-door office-door-left"></div><div class="office-door office-door-right"></div>
+                    <div class="office-label office-label-a">SZOLGÁLATI IRODA // A-204</div><div class="office-label office-label-b">BIZTONSÁGI AUDIT</div>
+
+                    <button class="office-hotspot hs-window" data-id="open-window" aria-label="Nyitott ablak"><span class="obj-window"></span><span class="hotspot-label">01 · Nyitott ablak</span></button>
+                    <button class="office-hotspot hs-board-pass" data-id="board-pass" aria-label="Jelszavak a faliújságon"><span class="obj-board"><i>PW</i><i>***</i><i>PIN</i></span><span class="hotspot-label">02 · Jelszó a faliújságon</span></button>
+                    <button class="office-hotspot hs-sensitive-board" data-id="sensitive-board" aria-label="Bizalmas adatok a táblán"><span class="obj-whiteboard"><b>ÜGY: 24/26</b><em>név • kód • cím</em></span><span class="hotspot-label">03 · Bizalmas adatok a táblán</span></button>
+                    <button class="office-hotspot hs-open-drawer" data-id="open-drawer" aria-label="Nyitott iratszekrény"><span class="obj-cabinet"><i></i><i></i><b></b></span><span class="hotspot-label">04 · Nyitott iratszekrény</span></button>
+                    <button class="office-hotspot hs-pc" data-id="unlocked-pc1" aria-label="Feloldott számítógép"><span class="obj-monitor"><b>BEJELENTKEZVE</b><i></i></span><span class="hotspot-label">05 · Feloldott számítógép</span></button>
+                    <button class="office-hotspot hs-monitor-pass" data-id="monitor-pass" aria-label="Monitorra ragasztott jelszó"><span class="obj-postit">P@ss<br>2026!</span><span class="hotspot-label">06 · Jelszó a monitoron</span></button>
+                    <button class="office-hotspot hs-phone" data-id="unattended-phone" aria-label="Felügyelet nélküli telefon"><span class="obj-phone">◉</span><span class="hotspot-label">07 · Őrizetlen telefon</span></button>
+                    <button class="office-hotspot hs-usb" data-id="abandoned-usb" aria-label="Ismeretlen USB"><span class="obj-usb">USB</span><span class="hotspot-label">08 · Ismeretlen USB</span></button>
+                    <button class="office-hotspot hs-document" data-id="desk-document" aria-label="Szenzitív irat az asztalon"><span class="obj-document"><b>AKTA</b><i></i><i></i><i></i></span><span class="hotspot-label">09 · Bizalmas irat az asztalon</span></button>
+                    <button class="office-hotspot hs-coffee" data-id="coffee-hazard" aria-label="Kávé az elektromos elosztó mellett"><span class="obj-coffee">☕</span><span class="obj-power">⚡</span><span class="hotspot-label">10 · Folyadék az elosztónál</span></button>
+                    <button class="office-hotspot hs-router" data-id="exposed-router" aria-label="Védtelen hálózati port"><span class="obj-router"><i></i><i></i><i></i><b></b></span><span class="hotspot-label">11 · Védtelen router port</span></button>
+                    <button class="office-hotspot hs-printer" data-id="printer-document" aria-label="Irat a nyomtatón"><span class="obj-printer"><b>PRINTER</b><i></i></span><span class="hotspot-label">12 · Irat a nyomtatón</span></button>
+                    <button class="office-hotspot hs-cctv" data-id="cctv-angle" aria-label="Rossz szögben álló kamera"><span class="obj-cctv">◉</span><span class="cctv-beam"></span><span class="hotspot-label">13 · Rossz kameraállás</span></button>
+                    <button class="office-hotspot hs-bin" data-id="unshredded-bin" aria-label="Megsemmisítetlen irat a kukában"><span class="obj-bin">▥<b>!</b></span><span class="hotspot-label">14 · Irat a normál kukában</span></button>
+                    <button class="office-hotspot hs-visitor" data-id="unattended-visitor" aria-label="Kíséret nélküli látogató"><span class="obj-person"><b></b><i></i><em>NO ID</em></span><span class="hotspot-label">15 · Kíséret nélküli látogató</span></button>
+                    <div id="office-success-overlays" aria-hidden="true"></div>
                 </div>
-
-                <p class="text-slate-300 text-xs mb-6 leading-relaxed bg-slate-950/40 p-4 border border-slate-900 rounded-xl">
-                    Szakmai audit feladat: Az alábbi interaktív vektoros iroda rajzán 15 súlyos információbiztonsági szabálytalanság van jelen. Kérjük, vizsgálja át az elrendezést és kattintson a mulasztásokra. Találat esetén zöld visszajelzést és szakmai magyarázatot kap!
-                </p>
-
-                <!-- Interactive Audit Area (Custom High-Quality SVG) -->
-                <div class="relative w-full aspect-[16/9] bg-[#0c1222] rounded-2xl overflow-hidden border border-slate-900 shadow-inner">
-                    <svg id="office-interactive-svg" class="w-full h-full select-none" viewBox="0 0 1000 562" aria-label="Interaktív iroda a biztonsági audit játékhoz">
-                        <!-- Wall and Floor Background -->
-                        <rect width="1000" height="562" fill="#080d1a"/>
-                        
-                        <!-- Isometric Wall structure grids -->
-                        <path d="M 0 150 L 500 380 L 1000 150 L 1000 0 L 0 0 Z" fill="#0c1326" stroke="#121d3a" stroke-width="2"/>
-                        <path d="M 500 380 L 500 562" stroke="#121d3a" stroke-width="2"/>
-                        
-                        <!-- Window on left back wall (with beautiful reflection lines) -->
-                        <polygon points="120,80 220,125 220,250 120,205" fill="#13233c" stroke="#253e6a" stroke-width="3"/>
-                        <line x1="170" y1="102" x2="170" y2="227" stroke="#253e6a" stroke-width="1.5"/>
-                        <!-- Target Error 1: Open Window / Nyitott ablak -->
-                        <g class="error-trigger cursor-pointer" data-id="open-window" role="button" aria-label="Nyitott ablak biztonsági rés">
-                            <!-- Click shield cover -->
-                            <polygon points="120,80 220,125 220,250 120,205" fill="transparent"/>
-                            <!-- Open Window Sash swung open in 3D perspective -->
-                            <polygon points="120,80 70,55 70,180 120,205" fill="#475569" fill-opacity="0.95" stroke="#64748b" stroke-width="2"/>
-                            <!-- Glass pane on sash with shiny reflection lines -->
-                            <polygon points="115,88 75,68 75,172 115,192" fill="#38bdf8" fill-opacity="0.2"/>
-                            <line x1="85" y1="90" x2="105" y2="150" stroke="#f8fafc" stroke-opacity="0.5" stroke-width="1.5"/>
-                            <line x1="95" y1="95" x2="110" y2="140" stroke="#f8fafc" stroke-opacity="0.5" stroke-width="1.5"/>
-                            <!-- Sunbeam streaming in -->
-                            <polygon points="120,205 250,300 350,290 220,250" fill="#fbbf24" fill-opacity="0.08"/>
-                        </g>
-
-                        <!-- Corkboard on left wall with yellow and pink note cards with legible placeholder text -->
-                        <polygon points="280,140 400,195 400,300 280,245" fill="#78350f" stroke="#451a03" stroke-width="4"/>
-                        <polygon points="284,144 396,191 396,296 284,249" fill="#d97706"/> <!-- Cork texture color -->
-
-                        <!-- Yellow Note Card (Password note) -->
-                        <g>
-                            <polygon points="295,165 330,181 330,221 295,205" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
-                            <text x="312" y="180" fill="#1e293b" font-size="5" font-weight="black" transform="skewY(25)" text-anchor="middle">Password:</text>
-                            <text x="312" y="190" fill="#b45309" font-size="5.5" font-family="monospace" font-weight="black" transform="skewY(25)" text-anchor="middle">BRFK_2026</text>
-                            <!-- Tiny red pin -->
-                            <circle cx="312.5" cy="170.5" r="2.5" fill="#ef4444"/>
-                        </g>
-
-                        <!-- Pink Note Card (To-Do list) -->
-                        <g>
-                            <polygon points="345,188 385,206 385,246 345,228" fill="#fbcfe8" stroke="#db2777" stroke-width="0.8"/>
-                            <text x="365" y="203" fill="#831843" font-size="5" font-weight="black" transform="skewY(25)" text-anchor="middle">To-Do:</text>
-                            <text x="365" y="211" fill="#475569" font-size="4" transform="skewY(25)" text-anchor="middle">- 08:00 Audit</text>
-                            <text x="365" y="217" fill="#475569" font-size="4" transform="skewY(25)" text-anchor="middle">- Firewall Check</text>
-                            <text x="365" y="223" fill="#475569" font-size="4" transform="skewY(25)" text-anchor="middle">- Report Export</text>
-                            <!-- Tiny blue pin -->
-                            <circle cx="365" cy="193" r="2.5" fill="#3b82f6"/>
-                        </g>
-
-                        <!-- Target Error 2: Password Post-it / Jelszó post-it a faliújságon -->
-                        <g class="error-trigger cursor-pointer" data-id="board-pass" role="button" aria-label="Kiírt jelszó post-iten">
-                            <!-- Click shield cover -->
-                            <polygon points="360,180 395,196 395,231 360,215" fill="transparent"/>
-                            <!-- Sticky Note paper with curled bottom corner in 3D perspective -->
-                            <polygon points="360,180 395,196 395,225 365,228 360,215" fill="#fef08a" stroke="#ca8a04" stroke-width="0.8"/>
-                            <polygon points="365,228 395,225 385,235" fill="#eab308" stroke="#ca8a04" stroke-width="0.5"/>
-                            <!-- Scribble on note -->
-                            <line x1="365" y1="195" x2="385" y2="204" stroke="#1e293b" stroke-width="1" stroke-dasharray="2 1"/>
-                            <line x1="365" y1="205" x2="380" y2="212" stroke="#dc2626" stroke-width="1.2"/>
-                            <!-- Red spherical push-pin casting a tiny shadow -->
-                            <ellipse cx="377" cy="189" rx="3" ry="1.5" fill="#991b1b" fill-opacity="0.5"/>
-                            <circle cx="377" cy="186" r="3.5" fill="#ef4444"/>
-                            <circle cx="376" cy="185" r="1" fill="#fecdd3"/>
-                        </g>
-
-                        <!-- Whiteboard on a stand with a sharp, legible network architecture diagram (labels 'SERVER', 'LAN', 'INTERNET') -->
-                        <!-- Stand legs in 3D -->
-                        <line x1="600" y1="310" x2="600" y2="360" stroke="#475569" stroke-width="3"/>
-                        <line x1="720" y1="255" x2="720" y2="305" stroke="#475569" stroke-width="3"/>
-                        <polygon points="590,360 610,360 600,350" fill="#334155"/>
-                        <polygon points="710,305 730,305 720,295" fill="#334155"/>
-
-                        <!-- Board casing -->
-                        <polygon points="600,205 720,150 720,255 600,310" fill="#f8fafc" stroke="#475569" stroke-width="4"/>
-
-                        <!-- Sharp, Legible Network Diagram elements -->
-                        <!-- SERVER box -->
-                        <polygon points="615,225 645,212 645,232 615,245" fill="#bae6fd" stroke="#0284c7" stroke-width="1.2"/>
-                        <text x="630" y="232" fill="#0369a1" font-size="5.5" font-weight="black" transform="skewY(-25)" text-anchor="middle">SERVER</text>
-
-                        <!-- LAN box -->
-                        <polygon points="652,240 682,226 682,246 652,260" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.2"/>
-                        <text x="667" y="246" fill="#15803d" font-size="5.5" font-weight="black" transform="skewY(-25)" text-anchor="middle">LAN</text>
-
-                        <!-- INTERNET cloud box -->
-                        <polygon points="685,185 715,171 715,191 685,205" fill="#fef08a" stroke="#ca8a04" stroke-width="1.2"/>
-                        <text x="700" y="191" fill="#a16207" font-size="5.5" font-weight="black" transform="skewY(-25)" text-anchor="middle">INTERNET</text>
-
-                        <!-- Interconnecting lines of network diagram -->
-                        <line x1="638" y1="235" x2="658" y2="242" stroke="#475569" stroke-width="1.5" stroke-dasharray="2 1"/>
-                        <line x1="675" y1="235" x2="695" y2="194" stroke="#475569" stroke-width="1.5"/>
-
-                        <!-- Target Error 3: Sensitive Case Details on Board / Szenzitív adatok a táblán -->
-                        <g class="error-trigger cursor-pointer" data-id="sensitive-board" role="button" aria-label="Szenzitív adatok a táblán">
-                            <!-- Click shield cover -->
-                            <polygon points="600,205 720,150 720,255 600,310" fill="transparent"/>
-                            <!-- Board stand tray shelf for markers -->
-                            <polygon points="597,308 597,314 717,259 717,253" fill="#94a3b8" stroke="#475569" stroke-width="0.5"/>
-                            <!-- Additional red thread & target indicators to make it audit-worthy -->
-                            <line x1="630" y1="232" x2="700" y2="191" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
-                            <line x1="667" y1="246" x2="700" y2="191" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round"/>
-                            <text x="660" y="205" fill="#dc2626" font-size="6.5" font-weight="black" transform="skewY(-25)" text-anchor="middle">KÓD: BRFK_2026_IP</text>
-                        </g>
-
-                        <!-- Svelte Dark Server Cabinet with detailed cooling grilles & blinking LEDs -->
-                        <!-- Cabinet Chassis Back/Side -->
-                        <path d="M 60 220 L 140 255 L 140 460 L 60 425 Z" fill="#0f172a" stroke="#334155" stroke-width="2"/>
-                        <path d="M 140 255 L 200 220 L 200 425 L 140 460 Z" fill="#020617" stroke="#1e293b" stroke-width="2"/>
-                        <!-- Glass-pane door frame on front side -->
-                        <polygon points="65,230 135,260 135,450 65,420" fill="#1e293b" fill-opacity="0.2" stroke="#475569" stroke-width="1.5"/>
-                        <!-- Server racks cooling grilles and blinking lights inside -->
-                        <!-- Rack unit 1 -->
-                        <polygon points="70,245 130,270 130,280 70,255" fill="#1e293b" stroke="#334155" stroke-width="0.5"/>
-                        <line x1="75" y1="250" x2="125" y2="271" stroke="#475569" stroke-width="1" stroke-dasharray="2 2"/>
-                        <circle cx="75" cy="254" r="1.5" fill="#10b981"/>
-                        <circle cx="80" cy="256" r="1.5" fill="#3b82f6"/>
-                        <!-- Rack unit 2 -->
-                        <polygon points="70,290 130,315 130,325 70,300" fill="#1e293b" stroke="#334155" stroke-width="0.5"/>
-                        <line x1="75" y1="295" x2="125" y2="316" stroke="#475569" stroke-width="1" stroke-dasharray="2 2"/>
-                        <circle cx="75" cy="299" r="1.5" fill="#f59e0b"/>
-                        <circle cx="80" cy="301" r="1.5" fill="#10b981"/>
-                        <!-- Rack unit 3 -->
-                        <polygon points="70,335 130,360 130,370 70,345" fill="#1e293b" stroke="#334155" stroke-width="0.5"/>
-                        <line x1="75" y1="340" x2="125" y2="361" stroke="#475569" stroke-width="1" stroke-dasharray="2 2"/>
-                        <circle cx="75" cy="344" r="1.5" fill="#10b981"/>
-                        <circle cx="80" cy="346" r="1.5" fill="#ef4444"/>
-
-                        <!-- Target Error 4: Open Drawer / Nyitott iratszekrény benne nyitott aktákkal -->
-                        <g class="error-trigger cursor-pointer" data-id="open-drawer" role="button" aria-label="Nyitott iratszekrény">
-                            <!-- Click shield cover -->
-                            <polygon points="60,350 145,385 145,462 60,425" fill="transparent"/>
-                            <!-- Opened sliding drawer in 3D projection -->
-                            <polygon points="35,380 95,410 95,445 35,415" fill="#475569" stroke="#1e293b" stroke-width="1.5"/>
-                            <!-- Drawer Silver Handle -->
-                            <line x1="55" y1="410" x2="75" y2="420" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round"/>
-                            <!-- Inner drawer sides showing it is slid open -->
-                            <polygon points="35,380 95,410 130,392 70,362 Z" fill="#1e293b" stroke="#334155" stroke-width="1"/>
-                            <!-- Hanging file folders peeking out with tab markers -->
-                            <polygon points="50,380 75,392 75,382 50,370" fill="#f87171" stroke="#b91c1c" stroke-width="0.5"/>
-                            <polygon points="70,388 95,400 95,390 70,378" fill="#fbbf24" stroke="#b45309" stroke-width="0.5"/>
-                            <polygon points="90,396 115,408 115,398 90,386" fill="#34d399" stroke="#047857" stroke-width="0.5"/>
-                            <!-- Folders top metal rails -->
-                            <line x1="45" y1="373" x2="115" y2="403" stroke="#cbd5e1" stroke-width="1.5"/>
-                        </g>
-
-                        <!-- Cohesive L-Shaped Desk Left (Desk 1) -->
-                        <path d="M 230 350 L 450 450 L 410 490 L 190 390 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/>
-                        <path d="M 190 390 L 120 355 L 160 335 L 230 350 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/> <!-- L-extension return -->
-
-                        <!-- Decor: Mug, laptop, key fob on left desk -->
-                        <!-- Laptop -->
-                        <polygon points="210,380 250,400 230,410 190,390" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1"/>
-                        <polygon points="210,380 250,400 250,370 210,350" fill="#1e293b" stroke="#cbd5e1" stroke-width="1"/>
-                        <polygon points="214,378 246,394 246,372 214,356" fill="#0284c7"/>
-                        <!-- Coffee Mug -->
-                        <ellipse cx="270" cy="410" rx="4" ry="2" fill="#3b82f6"/>
-                        <rect x="266" y="400" width="8" height="10" fill="#3b82f6"/>
-                        <ellipse cx="270" cy="400" rx="4" ry="2" fill="#1e3a8a"/>
-                        <!-- Key Fob -->
-                        <ellipse cx="290" cy="425" rx="3.5" ry="1.8" fill="#ef4444"/>
-                        <circle cx="286" cy="424" r="2" stroke="#cbd5e1" fill="none" stroke-width="0.5"/>
-
-                        <!-- Target Error 5: Unlocked Computer / Feloldott számítógép with Crystal Clear Network Diagram -->
-                        <g class="error-trigger cursor-pointer" data-id="unlocked-pc1" role="button" aria-label="Feloldott számítógép nyitott csevegővel">
-                            <!-- Click shield cover -->
-                            <polygon points="280,250 380,290 380,350 280,310" fill="transparent"/>
-                            <!-- Monitor Bezel in 3D projection -->
-                            <polygon points="285,265 375,295 375,340 285,310" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
-                            <!-- Monitor Base and Neck Stand -->
-                            <polygon points="325,325 335,328 335,355 325,350" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
-                            <polygon points="310,350 350,363 345,368 305,355" fill="#1e293b" stroke="#334155" stroke-width="1"/>
-                            <!-- Screen (displaying crystalline detailed network diagram nodes) -->
-                            <polygon points="288,272 371,300 371,333 288,305" fill="#0f172a"/>
-                            <!-- Crystalline vector nodes of network layout -->
-                            <circle cx="310" cy="295" r="3" fill="#38bdf8"/>
-                            <circle cx="330" cy="305" r="3" fill="#38bdf8"/>
-                            <circle cx="350" cy="315" r="3" fill="#ef4444"/>
-                            <line x1="310" y1="295" x2="330" y2="305" stroke="#94a3b8" stroke-width="0.8"/>
-                            <line x1="330" y1="305" x2="350" y2="315" stroke="#94a3b8" stroke-width="0.8"/>
-                            <text x="330" y="290" fill="#10b981" font-size="5" font-family="monospace" transform="skewY(10)" text-anchor="middle">LIVE DIAGRAM</text>
-                            <!-- Red Alert Warning Indicator -->
-                            <circle cx="360" cy="285" r="4" fill="#ef4444"/>
-                            <line x1="360" y1="283" x2="360" y2="286" stroke="#ffffff" stroke-width="1"/>
-                        </g>
-
-
-
-                        <!-- Target Error 10: Cup of coffee spilled near electronic equipment / Kávé az elosztó mellett -->
-                        <g class="error-trigger cursor-pointer" data-id="coffee-hazard" role="button" aria-label="Kiömlött kávé elektromos berendezés mellett">
-                            <!-- Click shield cover -->
-                            <polygon points="530,395 565,395 565,425 530,425" fill="transparent"/>
-                            <!-- Brown spilled puddle -->
-                            <ellipse cx="544" cy="416" rx="14" ry="7" fill="#451a03" stroke="#9a3412" stroke-width="1"/>
-                            <ellipse cx="540" cy="414" rx="8" ry="4" fill="#7c2d12"/>
-                            <!-- Tipped Ceramic Mug (White in isometric angle) -->
-                            <polygon points="548,401 563,407 558,416 543,410" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.2"/>
-                            <ellipse cx="560" cy="411" rx="4" ry="5" fill="#451a03" stroke="#cbd5e1" stroke-width="1"/>
-                            <!-- Blue shield star logo on mug side -->
-                            <circle cx="550" cy="407" r="2" fill="#1d4ed8"/>
-                        </g>
-
-                        <!-- Target Error 11: Exposed open router port / Nyitott, védtelen hálózati port -->
-                        <g class="error-trigger cursor-pointer" data-id="exposed-router" role="button" aria-label="Nyitott ethernet hálózati port routeren">
-                            <!-- Click shield cover -->
-                            <polygon points="615,415 665,415 665,480 615,480" fill="transparent"/>
-                            <!-- Network Switch Chassis -->
-                            <polygon points="620,440 660,420 660,455 620,475" fill="#0f172a" stroke="#475569" stroke-width="1.5"/>
-                            <!-- 2 Antennas on back -->
-                            <line x1="625" y1="440" x2="625" y2="420" stroke="#475569" stroke-width="2"/>
-                            <line x1="635" y1="435" x2="635" y2="415" stroke="#475569" stroke-width="2"/>
-                            <!-- Rows of glowing green/amber port status lights -->
-                            <circle cx="628" cy="448" r="1.5" fill="#10b981"/>
-                            <circle cx="633" cy="446" r="1.5" fill="#10b981"/>
-                            <circle cx="638" cy="444" r="1.5" fill="#f59e0b"/>
-                            <!-- Open empty port flashing red! -->
-                            <polygon points="644,438 654,433 654,441 644,446" fill="#ef4444" stroke="#fca5a5" stroke-width="0.8"/>
-                            <circle cx="649" cy="439" r="1" fill="#ffffff" class="animate-pulse"/>
-                            <!-- Loose Dangling Yellow LAN Cable -->
-                            <path d="M 649 439 Q 675 460, 665 478" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round"/>
-                        </g>
-
-                        <!-- Printer / Copier machine (Right Wall) -->
-                        <path d="M 830 320 L 910 280 L 910 440 L 830 480 Z" fill="#334155" stroke="#1e293b" stroke-width="2"/>
-                        <path d="M 910 280 L 960 305 L 960 465 L 910 440 Z" fill="#1e293b" stroke="#1e293b" stroke-width="2"/>
-                        <!-- Target Error 12: Forgotten document in printer tray / Nyomtatón felejtett bizalmas akták -->
-                        <g class="error-trigger cursor-pointer" data-id="printer-document" role="button" aria-label="Nyomtatón hagyott bizalmas iratok">
-                            <!-- Click shield cover -->
-                            <polygon points="835,265 935,265 935,325 835,325" fill="transparent"/>
-                            <!-- Forgotten Sheet of Paper lying flat in output bay -->
-                            <polygon points="842,298 898,270 928,284 872,312" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
-                            <!-- Printed text lines mock -->
-                            <line x1="855" y1="294" x2="885" y2="280" stroke="#475569" stroke-width="0.8"/>
-                            <line x1="860" y1="298" x2="895" y2="281" stroke="#475569" stroke-width="0.8"/>
-                            <line x1="865" y1="302" x2="910" y2="281" stroke="#475569" stroke-width="0.8"/>
-                            <line x1="875" y1="305" x2="905" y2="291" stroke="#dc2626" stroke-width="1"/>
-                        </g>
-
-                        <!-- Target Error 13: Surveillance Camera (CCTV) pointing directly at PC1 screen / Kamera a monitorra néz -->
-                        <g class="error-trigger cursor-pointer" data-id="cctv-angle" role="button" aria-label="Gyanús szögbe állított biztonsági kamera">
-                            <!-- Click shield cover -->
-                            <circle cx="260" cy="45" r="25" fill="transparent"/>
-                            <!-- Camera Base Bracket -->
-                            <polygon points="240,25 265,25 260,38 245,35" fill="#334155" stroke="#1e293b" stroke-width="1"/>
-                            <!-- Dome sphere housing (silver) -->
-                            <circle cx="254" cy="44" r="12" fill="#cbd5e1" stroke="#475569" stroke-width="1"/>
-                            <!-- Dark lens core globe pointing down towards monitor -->
-                            <ellipse cx="256" cy="48" rx="8" ry="5" fill="#090d16" stroke="#1e293b" stroke-width="1"/>
-                            <circle cx="258" cy="49" r="2" fill="#1e293b"/>
-                            <!-- Flashing red infrared status LED -->
-                            <circle cx="249" cy="43" r="1.5" fill="#ef4444"/>
-                            <!-- Visual line of sight -->
-                            <line x1="256" y1="48" x2="295" y2="265" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.3"/>
-                        </g>
-
-                        <!-- Target Error 14: Non-shredded paper sticking out of regular bin / Nem megsemmisített szenzitív akta a kukában -->
-                        <g class="error-trigger cursor-pointer" data-id="unshredded-bin" role="button" aria-label="Szemetesből kilógó nem megsemmisített dokumentumok">
-                            <!-- Click shield cover -->
-                            <polygon points="190,420 230,420 230,480 190,480" fill="transparent"/>
-                            <!-- Trash Bin Body (Mesh cylinder) -->
-                            <path d="M 196,435 L 224,435 L 218,475 L 202,475 Z" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
-                            <ellipse cx="210" cy="435" rx="14" ry="4" fill="#0f172a" stroke="#334155" stroke-width="1"/>
-                            <!-- Crumpled paper balls inside -->
-                            <circle cx="206" cy="434" r="5" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="0.5"/>
-                            <circle cx="215" cy="435" r="4.5" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.5"/>
-                            <!-- Huge unshredded printed document draping/hanging out of the bin -->
-                            <path d="M 204,428 C 200,410, 222,405, 218,426" fill="none" stroke="#f8fafc" stroke-width="8" stroke-linecap="butt"/>
-                            <polygon points="201,424 219,428 214,444 198,440" fill="#f8fafc" stroke="#cbd5e1" stroke-width="0.5"/>
-                            <!-- Printed text on hanging paper -->
-                            <line x1="203" y1="428" x2="215" y2="431" stroke="#64748b" stroke-width="0.8"/>
-                            <line x1="202" y1="433" x2="213" y2="436" stroke="#64748b" stroke-width="0.8"/>
-                            <circle cx="208" cy="438" r="1.5" fill="#ef4444"/>
-                        </g>
-
-                        <!-- Target Error 15: Stranger (No badge) standing unattended near back / Idegen kártya nélkül az irodában -->
-                        <g class="error-trigger cursor-pointer" data-id="unattended-visitor" role="button" aria-label="Látogatói kártya nélküli idegen személy az irodában">
-                            <!-- Click shield cover -->
-                            <polygon points="475,140 525,140 525,230 475,230" fill="transparent"/>
-                            <!-- Red target highlight outer circle -->
-                            <circle cx="500" cy="180" r="28" fill="#ef4444" fill-opacity="0.08" stroke="#ef4444" stroke-dasharray="3 3" stroke-width="1"/>
-                            <!-- Character Head -->
-                            <circle cx="500" cy="155" r="9" fill="#fbcfe8" stroke="#9d174d" stroke-width="1"/>
-                            <rect x="496" y="149" width="8" height="4" fill="#475569" rx="1"/>
-                            <!-- Character Body (Jacket) -->
-                            <path d="M 488,164 Q 500,162, 512,164 L 515,200 L 485,200 Z" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
-                            <!-- Jeans / Legs -->
-                            <rect x="489" y="200" width="9" height="20" fill="#1d4ed8" stroke="#172554" stroke-width="1"/>
-                            <rect x="502" y="200" width="9" height="20" fill="#1d4ed8" stroke="#172554" stroke-width="1"/>
-                            <!-- Shoes -->
-                            <ellipse cx="493.5" cy="221" rx="4.5" ry="2" fill="#0f172a"/>
-                            <ellipse cx="506.5" cy="221" rx="4.5" ry="2" fill="#0f172a"/>
-                            <!-- Missing ID Badge with a big red X cross symbol on chest -->
-                            <polygon points="496,174 504,174 504,182 496,182" fill="#f3f4f6" stroke="#94a3b8" stroke-width="0.5"/>
-                            <line x1="497" y1="175" x2="503" y2="181" stroke="#ef4444" stroke-width="1.2"/>
-                            <line x1="503" y1="175" x2="497" y2="181" stroke="#ef4444" stroke-width="1.2"/>
-                        </g>
-
-                        <!-- SUCCESS GREEN CIRCLES WILL BE OVERLAID DYNAMICALLY BY JAVASCRIPT -->
-                        <g id="office-success-overlays" aria-label="Megtalált találati pontok">
-                            <!-- Injected dynamically via JS as items are found -->
-                        </g>
-                    </svg>
-                </div>
-
-                <!-- Error description box (Dynamic) -->
-                <div class="mt-6 bg-slate-950 p-5 rounded-2xl min-h-[110px] flex flex-col sm:flex-row items-start sm:items-center justify-between border border-slate-850 gap-4">
-                    <div id="office-error-description" class="text-xs text-slate-400 leading-relaxed">
-                        <em>Kattintson az egyik biztonsági hibára az iroda rajzán a vizsgálat elindításához...</em>
-                    </div>
-                    <div class="text-right flex-shrink-0">
-                        <!-- Reset Button -->
-                        <button onclick="Quiz.resetOfficeErrorFinder()" class="px-5 py-2.5 border border-slate-800 hover:border-slate-700 bg-slate-900 hover:bg-slate-850 rounded-xl text-xs font-mono text-slate-300 transition-colors cursor-pointer">Audit Újraindítása</button>
-                    </div>
-                </div>
+                <div class="office-scene-legend"><span><i class="legend-dot legend-purple"></i>Kattintható objektum</span><span><i class="legend-dot legend-green"></i>Megtalálva</span><span><i class="legend-dot legend-red"></i>Biztonsági kockázat</span></div>
             </div>
-        </section>
+
+            <aside class="office-audit-panel">
+                <div class="office-counter-card"><div><span class="office-kicker">AUDIT ÁLLAPOT</span><h3 id="office-errors-counter">Megtalált hibák: 0 / 15</h3></div><div class="office-counter-number" id="office-counter-number">0</div><div class="office-progress-track"><div id="office-errors-bar" class="office-progress-fill" style="width:0%"></div></div></div>
+                <div class="office-findings-card"><div class="office-kicker">15 ELLENŐRZÉSI PONT</div><div id="office-error-list" class="office-error-list"></div></div>
+                <div class="office-description-card" id="office-error-description"><em>Kattintson egy gyanús objektumra az audit megkezdéséhez.</em></div>
+            </aside>
+        </div>
+    </div>
+</section>
 
         <!-- ============================================== -->
         <!-- SCREEN 7: ESCAPE ROOM / KISZABADULÓS SZOBA -->
@@ -1073,99 +651,8 @@
         <!-- ============================================== -->
         <!-- SCREEN 9: FUTURE DEVS / JÖVŐBENI FEJLESZTÉSEK -->
         <!-- ============================================== -->
-        <section id="screen-future" class="hidden transition-all duration-500 w-full max-w-4xl mx-auto">
-            <div class="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-                <!-- Decorative matrix / stars background effect -->
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl" aria-hidden="true"></div>
+        
 
-                <div class="flex items-center justify-between mb-6 border-b border-slate-900 pb-4">
-                    <div>
-                        <span class="text-[10px] font-bold text-purple-400 uppercase tracking-widest font-mono">Megvalósíthatósági tanulmány</span>
-                        <h2 class="text-2xl font-black text-white flex items-center space-x-2">
-                            <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.886H3.886L9 12.528l-1.912 5.886L12 14.792l5.088 3.622L15 12.528l5.114-4.642h-6.202L12 3z"/>
-                            </svg>
-                            <span>Jövőbeni Fejlesztési Javaslatok</span>
-                        </h2>
-                    </div>
-                    <button onclick="Navigation.showScreen('screen-map')" class="text-xs text-slate-400 hover:text-cyan-400 transition-colors cursor-pointer focus:outline-none">Vissza a Kapitányságra</button>
-                </div>
-
-                <p class="text-slate-300 text-xs mb-6 leading-relaxed bg-slate-950/40 p-4 border border-slate-850 rounded-xl">
-                    A <strong>CyberShield</strong> rendszer jelenlegi változata egy teljes értékű, internetkapcsolatot egyáltalán nem igénylő, zárt hálózatra optimalizált digitális tananyag. Az oktatástechnológiai követelmények és a technológia fejlődésével az alábbi jövőbeni bővítési lehetőségeket javasoljuk az állomány képzésének modernizálására:
-                </p>
-
-                <!-- Grid of proposals -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Proposal 1 -->
-                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-850 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="p-1.5 bg-cyan-950 rounded text-cyan-400 font-mono text-xs font-bold">01</span>
-                            <h4 class="text-sm font-bold text-slate-200">Offline AI & Helyi LLM Támogatás</h4>
-                        </div>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Integrálható helyi futtatású nyílt forráskódú nyelvi modell (pl. **Ollama** használatával **Gemma**, **Llama**, **Mistral** vagy **Phy** modellek), amely teljes mértékben helyben fut az állomás gépein. Ez lehetővé teszi interaktív beszélgetőpartner (AI Tutor) vagy intelligens esetértékelés használatát internet és adatvédelmi aggályok nélkül.
-                        </p>
-                    </div>
-
-                    <!-- Proposal 2 -->
-                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-850 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="p-1.5 bg-emerald-950 rounded text-emerald-400 font-mono text-xs font-bold">02</span>
-                            <h4 class="text-sm font-bold text-slate-200">RAG (Retrieval-Augmented Generation)</h4>
-                        </div>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Helyi dokumentum-keresési és tudásbázis-bővítési módszertan. A helyi LLM mellé egy vektor-adatbázis segítségével feltölthetjük az összes hivatalos magyar rendőrségi utasítást, törvényt (pl. Infotörvény) és belső információbiztonsági szabályzatot, így a mesterséges intelligencia tűpontos, hiteles forrásmegjelöléssel válaszol a rendőrök szakmai kérdéseire.
-                        </p>
-                    </div>
-
-                    <!-- Proposal 3 -->
-                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-850 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="p-1.5 bg-amber-950 rounded text-amber-400 font-mono text-xs font-bold">03</span>
-                            <h4 class="text-sm font-bold text-slate-200">SCORM Export & Moodle Integráció</h4>
-                        </div>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            A tananyag szabványosítása **SCORM (1.2 / 2004)** formátumba, lehetővé téve a közvetlen integrációt a rendőrség által már használt hivatalos **Moodle** vagy egyéb LMS (Learning Management System) keretrendszerekbe. Ezzel automatikussá válik az osztályzatok, XP-k és teljesítések központi szinkronizálása.
-                        </p>
-                    </div>
-
-                    <!-- Proposal 4 -->
-                    <div class="bg-slate-950 p-5 rounded-xl border border-slate-850 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="p-1.5 bg-purple-950 rounded text-purple-400 font-mono text-xs font-bold">04</span>
-                            <h4 class="text-sm font-bold text-slate-200">VR & AR Immerzív Szimulációk</h4>
-                        </div>
-                        <p class="text-xs text-slate-400 leading-relaxed">
-                            Virtuális Valóság (VR) alapú szimuláció, ahol a rendőrnek egy virtuálisan felépített kapitányságon kell fizikai tárgyakat auditálnia (pl. pendrive-ot elpakolni, monitort lezárni, asztali iratokat elzárni). AR (Kiterjesztett Valóság) segítségével a valódi irodában kaphat azonnali jelzéseket a hibás magatartásokról.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="mt-8 border-t border-slate-900 pt-4 text-center">
-                    <button onclick="Navigation.showScreen('screen-map')" class="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-lg text-xs transition-colors cursor-pointer">Vissza a Kapitányságra</button>
-                </div>
-            </div>
-        </section>
-
-    <!-- Custom Modal for Logout Confirmation -->
-    <div id="logout-confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-sm hidden">
-        <div class="glass-panel max-w-sm w-full p-6 rounded-2xl border border-red-500/30 shadow-2xl relative text-center space-y-4">
-            <div class="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mx-auto border border-red-500/30">
-                <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <h3 class="text-lg font-bold text-white">Profil és Adatok Törlése</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-                Biztosan törölni szeretné a teljes előrehaladását? Ez a művelet nem vonható vissza, és minden elért XP-t és jelvényt véglegesen töröl!
-            </p>
-            <div class="flex space-x-3 pt-2">
-                <button onclick="document.getElementById('logout-confirm-modal').classList.add('hidden')" class="flex-1 px-4 py-2 bg-slate-900 border border-slate-800 hover:bg-slate-850 hover:border-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all cursor-pointer">Mégsem</button>
-                <button onclick="App.confirmResetData()" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-red-600/20 cursor-pointer">Igen, törlöm</button>
-            </div>
-        </div>
-    </div>
 
     </main>
 
