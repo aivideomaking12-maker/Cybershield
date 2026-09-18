@@ -848,7 +848,7 @@ window.Quiz = (function() {
         const foundErrors = state.officeErrors || [];
 
         // Set up click triggers on SVG elements
-        const triggers = document.querySelectorAll('#office-interactive-svg .error-trigger');
+        const triggers = document.querySelectorAll('#office-interactive-scene .office-hotspot');
         triggers.forEach(trigger => {
             const errorId = trigger.getAttribute('data-id');
             
@@ -902,66 +902,8 @@ window.Quiz = (function() {
     }
 
     function addSuccessIndicator(errorId) {
-        const overlayContainer = document.getElementById('office-success-overlays');
-        if (!overlayContainer) return;
-
-        // Prevent duplicate overlays
-        if (document.getElementById(`success-overlay-${errorId}`)) return;
-
-        // Find the trigger element
-        const trigger = document.querySelector(`#office-interactive-svg .error-trigger[data-id="${errorId}"]`);
-        if (!trigger) return;
-
-        // Absolute precision center coordinates for placing success highlights over each of the 15 risks
-        const coords = {
-            'open-window': { cx: 170, cy: 165 },
-            'board-pass': { cx: 377, cy: 205 },
-            'sensitive-board': { cx: 660, cy: 230 },
-            'open-drawer': { cx: 65, cy: 412 },
-            'unlocked-pc1': { cx: 330, cy: 300 },
-            'monitor-pass': { cx: 368, cy: 321 },
-            'unattended-phone': { cx: 402, cy: 423 },
-            'abandoned-usb': { cx: 356, cy: 403 },
-            'desk-document': { cx: 702, cy: 392 },
-            'coffee-hazard': { cx: 544, cy: 416 },
-            'exposed-router': { cx: 640, cy: 447 },
-            'printer-document': { cx: 885, cy: 291 },
-            'cctv-angle': { cx: 254, cy: 44 },
-            'unshredded-bin': { cx: 210, cy: 430 },
-            'unattended-visitor': { cx: 500, cy: 180 }
-        };
-
-        // If no coordinate is defined for this errorId, do not render a center fallback to avoid visual clutter
-        if (!coords[errorId]) return;
-
-        const { cx, cy } = coords[errorId];
-
-        // Create elegant, low-opacity glowing highlight ring (no solid circle, and absolutely NO checkmark tick inside the scene)
-        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        group.id = `success-overlay-${errorId}`;
-
-        // Soft outer glow pulse
-        const glow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        glow.setAttribute("cx", cx);
-        glow.setAttribute("cy", cy);
-        glow.setAttribute("r", 15);
-        glow.setAttribute("fill", "#10b981");
-        glow.setAttribute("fill-opacity", "0.2");
-        glow.setAttribute("class", "animate-pulse");
-
-        // Dotted target style ring
-        const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        ring.setAttribute("cx", cx);
-        ring.setAttribute("cy", cy);
-        ring.setAttribute("r", 12);
-        ring.setAttribute("fill", "none");
-        ring.setAttribute("stroke", "#10b981");
-        ring.setAttribute("stroke-width", "1.5");
-        ring.setAttribute("stroke-dasharray", "3 2");
-
-        group.appendChild(glow);
-        group.appendChild(ring);
-        overlayContainer.appendChild(group);
+        const trigger = document.querySelector(`#office-interactive-scene .office-hotspot[data-id="${errorId}"]`);
+        if (trigger) trigger.classList.add('is-found');
     }
 
     function updateOfficeCounter() {
@@ -973,13 +915,23 @@ window.Quiz = (function() {
         const progressBar = document.getElementById('office-errors-bar');
 
         if (counterText) counterText.innerText = `Megtalált hibák: ${count} / ${total}`;
+        const number = document.getElementById('office-counter-number');
+        if (number) number.textContent = count;
         if (progressBar) {
             const percent = (count / total) * 100;
             progressBar.style.width = `${percent}%`;
+            progressBar.classList.toggle('complete', count === total);
             if (count === total) {
-                progressBar.className = "bg-emerald-500 h-full transition-all duration-500";
-                window.Gamification.showToast("Tökéletes audit!", "Megtalálta az összes biztonsági hibát az irodában! Elit auditor jelvény szerzve.", 'badge');
+                window.Gamification.showToast("Tökéletes audit!", "Megtalálta mind a 15 biztonsági hibát az irodában!", 'badge');
             }
+        }
+        const list = document.getElementById('office-error-list');
+        if (list) {
+            const defs = Object.entries(window.QuizData.officeErrors);
+            list.innerHTML = defs.map(([id, info], index) => {
+                const found = state.officeErrors.includes(id);
+                return `<button type="button" class="office-error-list-item ${found ? 'is-found' : ''}" data-office-list-id="${id}" onclick="Quiz.selectOfficeError('${id}')"><span class="office-error-number">${String(index + 1).padStart(2,'0')}</span><span class="office-error-list-title">${info.title}</span><span class="office-error-list-status">${found ? '✓' : '○'}</span></button>`;
+            }).join('');
         }
     }
 
@@ -988,9 +940,12 @@ window.Quiz = (function() {
         state.officeErrors = [];
         window.Progress.save();
 
-        // Clear overlays
+        // Clear visual found states
+        document.querySelectorAll('#office-interactive-scene .office-hotspot.is-found').forEach(el => el.classList.remove('is-found'));
         const overlayContainer = document.getElementById('office-success-overlays');
         if (overlayContainer) overlayContainer.innerHTML = '';
+        const list = document.getElementById('office-error-list');
+        if (list) list.querySelectorAll('.office-error-list-item').forEach(el => el.classList.remove('is-found'));
 
         updateOfficeCounter();
         const descBox = document.getElementById('office-error-description');
