@@ -261,6 +261,141 @@ window.Navigation = (function() {
         if (progressSummaryText) {
             progressSummaryText.textContent = `${completedCount} / 5 Helyiség Auditálva`;
         }
+
+        refreshEnhancedDashboardUI(state, completedCount);
+    }
+
+    /**
+     * CyberShield 2.0 command-center widgets.
+     * Keeps the visual dashboard derived from the existing progress state,
+     * so no new database fields are required for the UI redesign.
+     */
+    function refreshEnhancedDashboardUI(state, completedCount) {
+        const modules = [1, 2, 3, 4, 5];
+        const completed = state.completedModules || {};
+        const percentage = Math.round((completedCount / modules.length) * 100);
+
+        const ring = document.getElementById('dashboard-progress-circle');
+        if (ring) {
+            const r = parseFloat(ring.getAttribute('r')) || 39;
+            const circumference = 2 * Math.PI * r;
+            ring.style.strokeDasharray = `${circumference} ${circumference}`;
+            ring.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+        }
+        const pct = document.getElementById('dashboard-progress-percentage');
+        const summary = document.getElementById('dashboard-progress-summary');
+        if (pct) pct.textContent = `${percentage}%`;
+        if (summary) summary.textContent = `${completedCount} / 5`;
+
+        const dots = document.getElementById('dashboard-progress-dots');
+        if (dots) {
+            dots.innerHTML = modules.map(id => {
+                const details = completed[id];
+                const perfect = details && details.score === details.total;
+                return `<span class="${perfect ? 'perfect' : details ? 'done' : ''}" title="${modules[id-1] ? window.QuizData.modules[id].category : ''}"></span>`;
+            }).join('');
+        }
+
+        // Find the first unfinished module; it becomes the primary call-to-action.
+        let nextId = modules.find(id => !completed[id]);
+        if (!nextId) nextId = 5;
+        const next = window.QuizData.modules[nextId];
+        const nextDetails = completed[nextId];
+        const nextTitle = document.getElementById('dashboard-next-title');
+        const nextSubtitle = document.getElementById('dashboard-next-subtitle');
+        const nextIcon = document.getElementById('dashboard-next-icon');
+        const nextBar = document.getElementById('dashboard-next-bar');
+        const nextPercent = document.getElementById('dashboard-next-percent');
+        const nextButton = document.getElementById('dashboard-next-button');
+
+        if (next) {
+            if (nextTitle) nextTitle.textContent = next.title;
+            if (nextSubtitle) nextSubtitle.textContent = `${String(nextId).padStart(2, '0')}. ${next.category}`;
+            if (nextIcon) nextIcon.textContent = String(nextId).padStart(2, '0');
+            const modulePct = nextDetails ? Math.round((nextDetails.score / Math.max(nextDetails.total, 1)) * 100) : 0;
+            if (nextBar) nextBar.style.width = `${modulePct}%`;
+            if (nextPercent) nextPercent.textContent = nextDetails ? `${modulePct}% teljesítve` : `${next.xpAward || 0} XP szerezhető`;
+            if (nextButton) {
+                nextButton.textContent = nextDetails ? 'MEGNYITÁS  →' : 'BELÉPÉS  →';
+                nextButton.onclick = () => enterModule(nextId);
+            }
+        }
+
+        const xp = Number(state.user?.xp || 0);
+        const ranks = [
+            { min: 0, name: 'Újonc', next: 100 },
+            { min: 100, name: 'Kiképzett Járőrtárs', next: 300 },
+            { min: 300, name: 'Biztonsági Járőr', next: 600 },
+            { min: 600, name: 'Információbiztonsági Vizsgáló', next: 1000 },
+            { min: 1000, name: 'Cyber Detektív', next: 1500 },
+            { min: 1500, name: 'Főkapitány-Helyettes', next: 1500 }
+        ];
+        let currentRank = ranks[0];
+        for (const r of ranks) if (xp >= r.min) currentRank = r;
+        const nextRank = ranks.find(r => r.min > xp) || currentRank;
+        const base = currentRank.min;
+        const target = nextRank.min;
+        const xpProgress = target > base ? Math.max(0, Math.min(100, ((xp - base) / (target - base)) * 100)) : 100;
+
+        const rankEl = document.getElementById('dashboard-rank');
+        const nextRankEl = document.getElementById('dashboard-next-rank');
+        const rankLarge = document.getElementById('dashboard-rank-large');
+        const rankCopy = document.getElementById('dashboard-rank-copy');
+        const xpBar = document.getElementById('dashboard-xp-bar');
+        const xpCurrent = document.getElementById('dashboard-xp-current');
+        const xpTarget = document.getElementById('dashboard-xp-target');
+        if (rankEl) rankEl.textContent = state.user?.badge || currentRank.name;
+        if (nextRankEl) nextRankEl.textContent = nextRank.name;
+        if (rankLarge) rankLarge.textContent = nextRank.name;
+        if (rankCopy) rankCopy.textContent = target > xp ? `${target - xp} XP szükséges a következő szinthez.` : 'A legmagasabb jelenlegi rang elérve.';
+        if (xpBar) xpBar.style.width = `${xpProgress}%`;
+        if (xpCurrent) xpCurrent.textContent = `${xp} XP`;
+        if (xpTarget) xpTarget.textContent = `${target} XP`;
+
+        // Recent results: show up to three completed modules, newest first.
+        const latest = document.getElementById('dashboard-latest-results');
+        if (latest) {
+            const entries = Object.entries(completed)
+                .map(([id, d]) => ({ id: Number(id), ...d }))
+                .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+                .slice(0, 3);
+            latest.innerHTML = entries.length ? entries.map(item => {
+                const m = window.QuizData.modules[item.id];
+                const scorePct = Math.round((item.score / Math.max(item.total, 1)) * 100);
+                return `<div class="dashboard-result-row"><div class="dashboard-result-icon">✓</div><div class="min-w-0"><div class="text-[10px] font-black text-slate-200 truncate">${m?.category || `Modul ${item.id}`}</div><div class="text-[8px] text-slate-600">${m?.title || ''}</div></div><div class="text-right"><div class="text-[10px] font-mono text-emerald-400">${scorePct}%</div><div class="text-[8px] font-mono text-amber-400">+${item.xp || 0} XP</div></div></div>`;
+            }).join('') : '<div class="text-[10px] text-slate-600 py-4 text-center">Még nincs teljesített modul.</div>';
+        }
+
+        // Derived achievement badges (visual only; actual progress remains in the existing state).
+        const badgeDefinitions = [
+            ['🛡', 'Kezdő őrszem', completed[1]],
+            ['🏆', 'Kiváló audit', Object.values(completed).some(d => d.score === d.total)],
+            ['🎯', 'Ötös küldetés', completedCount === 5],
+            ['🔐', 'Adatőr', xp >= 100],
+            ['⚡', 'XP-vadász', xp >= 300],
+            ['👁', 'Auditőr', (state.officeErrors || []).length >= 15],
+            ['🚨', 'Incidenskezelő', (state.escaperoomLocks || []).every(Boolean)],
+            ['★', 'Cyber Guardian', completedCount === 5 && (state.officeErrors || []).length >= 15]
+        ];
+        const unlocked = badgeDefinitions.filter(b => !!b[2]).length;
+        const badgeCount = document.getElementById('dashboard-badge-count');
+        if (badgeCount) badgeCount.textContent = `${unlocked} / 12`;
+        const badgeGrid = document.getElementById('dashboard-badges');
+        if (badgeGrid) {
+            badgeGrid.innerHTML = badgeDefinitions.map(b => `<div class="dashboard-badge ${b[2] ? 'unlocked' : ''}" title="${b[1]}">${b[0]}</div>`).join('') + Array.from({length: Math.max(0, 12 - badgeDefinitions.length)}, () => '<div class="dashboard-badge">•</div>').join('');
+        }
+
+        const statusTitle = document.getElementById('dashboard-status-title');
+        const statusCopy = document.getElementById('dashboard-status-copy');
+        if (statusTitle && statusCopy) {
+            if (completedCount === 5) {
+                statusTitle.textContent = 'Kiképzés teljesítve';
+                statusCopy.textContent = 'A teljes kapitánysági képzési útvonal lezárult.';
+            } else {
+                statusTitle.textContent = 'Kapitánysági kiképzés folyamatban';
+                statusCopy.textContent = `${5 - completedCount} helyiség vár még auditálásra.`;
+            }
+        }
     }
 
     /**
