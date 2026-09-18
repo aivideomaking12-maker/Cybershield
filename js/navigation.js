@@ -13,25 +13,22 @@ window.Navigation = (function() {
         'screen-diagnostic',
         'screen-diagnostic-result',
         'screen-map',
-        'screen-scenarios',
         'screen-module',
         'screen-office-errors',
         'screen-escaperoom',
-        'screen-teacher'
+        'screen-teacher',
+        'screen-future'
     ];
 
     let currentModuleId = null;
     let activeModuleQuestionIndex = 0;
     let moduleAnswers = [];
-    let currentScreenId = null;
-    let screenHistory = [];
-    let restoringHistory = false;
 
     /**
      * Show a specific screen and hide all others
      * @param {string} screenId ID of the section to show
      */
-    function showScreen(screenId, options = {}) {
+    function showScreen(screenId) {
         if (!ALL_SCREENS.includes(screenId)) {
             console.error(`Ismeretlen képernyő ID: ${screenId}`);
             return;
@@ -41,55 +38,44 @@ window.Navigation = (function() {
         if (screenId === 'screen-teacher') {
             const state = window.Progress.getState();
             if (!state.user || state.user.role !== 'admin') {
+                console.warn('Hozzáférés megtagadva: az oktatói felület csak admin jogosultsággal érhető el.');
                 screenId = state.user ? 'screen-map' : 'screen-landing';
             }
         }
 
-        const previous = currentScreenId || document.querySelector('.active-screen')?.id || null;
-        if (!options.fromHistory && previous && previous !== screenId && previous !== 'screen-landing') {
-            screenHistory.push(previous);
-        }
-        if (options.replaceHistory) screenHistory = [];
-        currentScreenId = screenId;
-
+        // Hide all screens
         ALL_SCREENS.forEach(id => {
             const el = document.getElementById(id);
-            if (el) { el.classList.add('hidden'); el.classList.remove('active-screen'); }
+            if (el) {
+                el.classList.add('hidden');
+                el.classList.remove('active-screen');
+            }
         });
 
+        // Show target screen
         const target = document.getElementById(screenId);
         if (target) {
             target.classList.remove('hidden');
-            setTimeout(() => target.classList.add('active-screen'), 50);
+            // Force animation frame
+            setTimeout(() => {
+                target.classList.add('active-screen');
+            }, 50);
         }
 
+        // Run screen-specific initializers
         onScreenActivated(screenId);
-        updateBackButton();
+
+        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function goBack() {
-        while (screenHistory.length) {
-            const previous = screenHistory.pop();
-            if (previous && document.getElementById(previous)) {
-                showScreen(previous, { fromHistory: true });
-                return;
-            }
-        }
-        goToHome();
-    }
-
-    function updateBackButton() {
-        const btn = document.getElementById('back-btn');
-        if (!btn) return;
-        const show = !!currentScreenId && !['screen-landing','screen-map','screen-profile'].includes(currentScreenId);
-        btn.classList.toggle('hidden', !show);
     }
 
     function goToHome() {
         const state = window.Progress.load();
-        screenHistory = [];
-        showScreen(state.user ? 'screen-map' : 'screen-landing', { replaceHistory: true, fromHistory: true });
+        if (state.user) {
+            showScreen('screen-map');
+        } else {
+            showScreen('screen-landing');
+        }
     }
 
     /**
@@ -102,18 +88,15 @@ window.Navigation = (function() {
         const isAdmin = isLoggedIn && state.user.role === 'admin';
 
         const navMap = document.getElementById('nav-btn-map');
-        const navScenarios = document.getElementById('nav-btn-scenarios');
         const navTeacher = document.getElementById('nav-btn-teacher');
         const logoutBtn = document.getElementById('logout-btn');
 
         if (isLoggedIn) {
             if (navMap) navMap.classList.remove('hidden');
-            if (navScenarios) navScenarios.classList.remove('hidden');
             if (navTeacher) navTeacher.classList.toggle('hidden', !isAdmin);
             if (logoutBtn) logoutBtn.classList.remove('hidden');
         } else {
             if (navMap) navMap.classList.add('hidden');
-            if (navScenarios) navScenarios.classList.add('hidden');
             if (navTeacher) navTeacher.classList.add('hidden');
             if (logoutBtn) logoutBtn.classList.add('hidden');
         }
@@ -121,8 +104,6 @@ window.Navigation = (function() {
         switch (screenId) {
             case 'screen-map':
                 refreshMapBlueprintUI();
-                break;
-            case 'screen-scenarios':
                 break;
             case 'screen-office-errors':
                 window.Quiz.initOfficeErrorFinder();
@@ -261,26 +242,160 @@ window.Navigation = (function() {
             }
         });
 
-        // 3. Update the single right-side TELJESÍTÉS widget.
-        const progressCircle = document.getElementById('dashboard-progress-circle');
-        const progressPercentageText = document.getElementById('dashboard-progress-percentage');
-        const progressSummaryText = document.getElementById('dashboard-progress-summary');
-        const percentage = Math.round((completedCount / 5) * 100);
-        if (progressCircle) {
-            const r = parseFloat(progressCircle.getAttribute('r')) || 39;
-            const circumference = 2 * Math.PI * r;
-            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-            progressCircle.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
-        }
-        if (progressPercentageText) progressPercentageText.textContent = `${percentage}%`;
-        if (progressSummaryText) progressSummaryText.textContent = `${completedCount} / 5`;
-        const dots = document.getElementById('dashboard-progress-dots');
-        if (dots) dots.innerHTML = modulesList.map(id => {
-            const d = state.completedModules[id];
-            const perfect = d && d.score === d.total;
-            return `<span class="${perfect ? 'perfect' : d ? 'done' : ''}" title="${window.QuizData.modules[id].category}"></span>`;
-        }).join('');
+        // 3. Update Circular Progress widget using SVG
+        const progressCircle = document.getElementById('overall-progress-circle');
+        const progressPercentageText = document.getElementById('overall-progress-percentage');
+        const progressSummaryText = document.getElementById('overall-progress-summary');
 
+        if (progressCircle) {
+            const r = parseFloat(progressCircle.getAttribute('r')) || 40;
+            const circumference = 2 * Math.PI * r;
+            const percentage = (completedCount / 5) * 100;
+            const offset = circumference - (percentage / 100) * circumference;
+            progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+            progressCircle.style.strokeDashoffset = offset;
+        }
+        if (progressPercentageText) {
+            progressPercentageText.textContent = `${(completedCount / 5) * 100}%`;
+        }
+        if (progressSummaryText) {
+            progressSummaryText.textContent = `${completedCount} / 5 Helyiség Auditálva`;
+        }
+
+        refreshEnhancedDashboardUI(state, completedCount);
+    }
+
+    /**
+     * CyberShield 2.0 command-center widgets.
+     * Keeps the visual dashboard derived from the existing progress state,
+     * so no new database fields are required for the UI redesign.
+     */
+    function refreshEnhancedDashboardUI(state, completedCount) {
+        const modules = [1, 2, 3, 4, 5];
+        const completed = state.completedModules || {};
+        const percentage = Math.round((completedCount / modules.length) * 100);
+
+        const ring = document.getElementById('dashboard-progress-circle');
+        if (ring) {
+            const r = parseFloat(ring.getAttribute('r')) || 39;
+            const circumference = 2 * Math.PI * r;
+            ring.style.strokeDasharray = `${circumference} ${circumference}`;
+            ring.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+        }
+        const pct = document.getElementById('dashboard-progress-percentage');
+        const summary = document.getElementById('dashboard-progress-summary');
+        if (pct) pct.textContent = `${percentage}%`;
+        if (summary) summary.textContent = `${completedCount} / 5`;
+
+        const dots = document.getElementById('dashboard-progress-dots');
+        if (dots) {
+            dots.innerHTML = modules.map(id => {
+                const details = completed[id];
+                const perfect = details && details.score === details.total;
+                return `<span class="${perfect ? 'perfect' : details ? 'done' : ''}" title="${modules[id-1] ? window.QuizData.modules[id].category : ''}"></span>`;
+            }).join('');
+        }
+
+        // Find the first unfinished module; it becomes the primary call-to-action.
+        let nextId = modules.find(id => !completed[id]);
+        if (!nextId) nextId = 5;
+        const next = window.QuizData.modules[nextId];
+        const nextDetails = completed[nextId];
+        const nextTitle = document.getElementById('dashboard-next-title');
+        const nextSubtitle = document.getElementById('dashboard-next-subtitle');
+        const nextIcon = document.getElementById('dashboard-next-icon');
+        const nextBar = document.getElementById('dashboard-next-bar');
+        const nextPercent = document.getElementById('dashboard-next-percent');
+        const nextButton = document.getElementById('dashboard-next-button');
+
+        if (next) {
+            if (nextTitle) nextTitle.textContent = next.title;
+            if (nextSubtitle) nextSubtitle.textContent = `${String(nextId).padStart(2, '0')}. ${next.category}`;
+            if (nextIcon) nextIcon.textContent = String(nextId).padStart(2, '0');
+            const modulePct = nextDetails ? Math.round((nextDetails.score / Math.max(nextDetails.total, 1)) * 100) : 0;
+            if (nextBar) nextBar.style.width = `${modulePct}%`;
+            if (nextPercent) nextPercent.textContent = nextDetails ? `${modulePct}% teljesítve` : `${next.xpAward || 0} XP szerezhető`;
+            if (nextButton) {
+                nextButton.textContent = nextDetails ? 'MEGNYITÁS  →' : 'BELÉPÉS  →';
+                nextButton.onclick = () => enterModule(nextId);
+            }
+        }
+
+        const xp = Number(state.user?.xp || 0);
+        const ranks = [
+            { min: 0, name: 'Újonc', next: 100 },
+            { min: 100, name: 'Kiképzett Járőrtárs', next: 300 },
+            { min: 300, name: 'Biztonsági Járőr', next: 600 },
+            { min: 600, name: 'Információbiztonsági Vizsgáló', next: 1000 },
+            { min: 1000, name: 'Cyber Detektív', next: 1500 },
+            { min: 1500, name: 'Főkapitány-Helyettes', next: 1500 }
+        ];
+        let currentRank = ranks[0];
+        for (const r of ranks) if (xp >= r.min) currentRank = r;
+        const nextRank = ranks.find(r => r.min > xp) || currentRank;
+        const base = currentRank.min;
+        const target = nextRank.min;
+        const xpProgress = target > base ? Math.max(0, Math.min(100, ((xp - base) / (target - base)) * 100)) : 100;
+
+        const rankEl = document.getElementById('dashboard-rank');
+        const nextRankEl = document.getElementById('dashboard-next-rank');
+        const rankLarge = document.getElementById('dashboard-rank-large');
+        const rankCopy = document.getElementById('dashboard-rank-copy');
+        const xpBar = document.getElementById('dashboard-xp-bar');
+        const xpCurrent = document.getElementById('dashboard-xp-current');
+        const xpTarget = document.getElementById('dashboard-xp-target');
+        if (rankEl) rankEl.textContent = state.user?.badge || currentRank.name;
+        if (nextRankEl) nextRankEl.textContent = nextRank.name;
+        if (rankLarge) rankLarge.textContent = nextRank.name;
+        if (rankCopy) rankCopy.textContent = target > xp ? `${target - xp} XP szükséges a következő szinthez.` : 'A legmagasabb jelenlegi rang elérve.';
+        if (xpBar) xpBar.style.width = `${xpProgress}%`;
+        if (xpCurrent) xpCurrent.textContent = `${xp} XP`;
+        if (xpTarget) xpTarget.textContent = `${target} XP`;
+
+        // Recent results: show up to three completed modules, newest first.
+        const latest = document.getElementById('dashboard-latest-results');
+        if (latest) {
+            const entries = Object.entries(completed)
+                .map(([id, d]) => ({ id: Number(id), ...d }))
+                .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')))
+                .slice(0, 3);
+            latest.innerHTML = entries.length ? entries.map(item => {
+                const m = window.QuizData.modules[item.id];
+                const scorePct = Math.round((item.score / Math.max(item.total, 1)) * 100);
+                return `<div class="dashboard-result-row"><div class="dashboard-result-icon">✓</div><div class="min-w-0"><div class="text-[10px] font-black text-slate-200 truncate">${m?.category || `Modul ${item.id}`}</div><div class="text-[8px] text-slate-600">${m?.title || ''}</div></div><div class="text-right"><div class="text-[10px] font-mono text-emerald-400">${scorePct}%</div><div class="text-[8px] font-mono text-amber-400">+${item.xp || 0} XP</div></div></div>`;
+            }).join('') : '<div class="text-[10px] text-slate-600 py-4 text-center">Még nincs teljesített modul.</div>';
+        }
+
+        // Derived achievement badges (visual only; actual progress remains in the existing state).
+        const badgeDefinitions = [
+            ['🛡', 'Kezdő őrszem', completed[1]],
+            ['🏆', 'Kiváló audit', Object.values(completed).some(d => d.score === d.total)],
+            ['🎯', 'Ötös küldetés', completedCount === 5],
+            ['🔐', 'Adatőr', xp >= 100],
+            ['⚡', 'XP-vadász', xp >= 300],
+            ['👁', 'Auditőr', (state.officeErrors || []).length >= 15],
+            ['🚨', 'Incidenskezelő', (state.escaperoomLocks || []).every(Boolean)],
+            ['★', 'Cyber Guardian', completedCount === 5 && (state.officeErrors || []).length >= 15]
+        ];
+        const unlocked = badgeDefinitions.filter(b => !!b[2]).length;
+        const badgeCount = document.getElementById('dashboard-badge-count');
+        if (badgeCount) badgeCount.textContent = `${unlocked} / 12`;
+        const badgeGrid = document.getElementById('dashboard-badges');
+        if (badgeGrid) {
+            badgeGrid.innerHTML = badgeDefinitions.map(b => `<div class="dashboard-badge ${b[2] ? 'unlocked' : ''}" title="${b[1]}">${b[0]}</div>`).join('') + Array.from({length: Math.max(0, 12 - badgeDefinitions.length)}, () => '<div class="dashboard-badge">•</div>').join('');
+        }
+
+        const statusTitle = document.getElementById('dashboard-status-title');
+        const statusCopy = document.getElementById('dashboard-status-copy');
+        if (statusTitle && statusCopy) {
+            if (completedCount === 5) {
+                statusTitle.textContent = 'Kiképzés teljesítve';
+                statusCopy.textContent = 'A teljes kapitánysági képzési útvonal lezárult.';
+            } else {
+                statusTitle.textContent = 'Kapitánysági kiképzés folyamatban';
+                statusCopy.textContent = `${5 - completedCount} helyiség vár még auditálásra.`;
+            }
+        }
     }
 
     /**
@@ -727,30 +842,6 @@ window.Navigation = (function() {
         }
     }
 
-    function applyTheme(theme) {
-        const root = document.documentElement;
-        const isLight = theme === 'light';
-        root.classList.toggle('light-theme', isLight);
-        root.dataset.theme = isLight ? 'light' : 'dark';
-        localStorage.setItem('cybershield_theme', isLight ? 'light' : 'dark');
-        const icon = document.getElementById('theme-toggle-icon');
-        if (icon) {
-            icon.innerHTML = isLight
-                ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
-                : '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z"/>';
-        }
-    }
-
-    function toggleTheme() {
-        const next = document.documentElement.classList.contains('light-theme') ? 'dark' : 'light';
-        applyTheme(next);
-    }
-
-    function initTheme() {
-        const saved = localStorage.getItem('cybershield_theme');
-        applyTheme(saved === 'light' ? 'light' : 'dark');
-    }
-
     return {
         showScreen: showScreen,
         goToHome: goToHome,
@@ -758,9 +849,6 @@ window.Navigation = (function() {
         startModuleQuiz: startModuleQuiz,
         selectModuleAnswer: selectModuleAnswer,
         isModuleUnlocked: isModuleUnlocked,
-        selectTeacherStudent: selectTeacherStudent,
-        goBack: goBack,
-        toggleTheme: toggleTheme,
-        initTheme: initTheme
+        selectTeacherStudent: selectTeacherStudent
     };
 })();
