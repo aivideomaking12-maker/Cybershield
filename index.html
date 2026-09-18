@@ -277,8 +277,23 @@
 
             <!-- Interaktív Alaprajz (Interactive Map Canvas/Container) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start">
-                <!-- Map Left: Sidebar with module progress list -->
-                <div class="lg:col-span-3 xl:col-span-2 space-y-3">
+                <!-- Map Left: Command-center navigation + module progress -->
+                <div class="lg:col-span-3 xl:col-span-2 space-y-3 cyber-sidebar">
+                    <nav class="cyber-side-nav" aria-label="Kiképzési navigáció">
+                        <button class="cyber-side-nav-item active" type="button" onclick="Navigation.showScreen('screen-map')">
+                            <span class="cyber-side-nav-icon">⌂</span><span>Kiképző központ</span>
+                        </button>
+                        <button class="cyber-side-nav-item" type="button" onclick="Navigation.showScreen('screen-escaperoom')">
+                            <span class="cyber-side-nav-icon">◎</span><span>Szituációs gyakorlatok</span>
+                        </button>
+                        <button class="cyber-side-nav-item" type="button" onclick="document.getElementById('dashboard-results-card')?.scrollIntoView({behavior:'smooth',block:'center'})">
+                            <span class="cyber-side-nav-icon">▥</span><span>Eredményeim</span>
+                        </button>
+                        <button class="cyber-side-nav-item" type="button" onclick="document.getElementById('dashboard-badges-card')?.scrollIntoView({behavior:'smooth',block:'center'})">
+                            <span class="cyber-side-nav-icon">◇</span><span>Jelvényeim</span>
+                        </button>
+                    </nav>
+
                     <!-- Progress widget with SVG circle diagram -->
                     <div class="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex flex-col items-center text-center">
                         <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4">Teljes Tanfolyam Progress</h4>
@@ -536,8 +551,8 @@
             </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
-            <div class="cyber-card"><div class="cyber-card-title flex items-center justify-between">LEGUTÓBBI EREDMÉNYEIM <span class="text-[9px] text-cyan-400">TELJESÍTMÉNY</span></div><div id="dashboard-latest-results" class="space-y-2 mt-3"></div></div>
-            <div class="cyber-card"><div class="cyber-card-title flex items-center justify-between">JELVÉNYEIM <span id="dashboard-badge-count" class="badge-count">0 / 12</span></div><div id="dashboard-badges" class="dashboard-badges-grid mt-3"></div></div>
+            <div id="dashboard-results-card" class="cyber-card"><div class="cyber-card-title flex items-center justify-between">LEGUTÓBBI EREDMÉNYEIM <span class="text-[9px] text-cyan-400">TELJESÍTMÉNY</span></div><div id="dashboard-latest-results" class="space-y-2 mt-3"></div></div>
+            <div id="dashboard-badges-card" class="cyber-card"><div class="cyber-card-title flex items-center justify-between">JELVÉNYEIM <span id="dashboard-badge-count" class="badge-count">0 / 12</span></div><div id="dashboard-badges" class="dashboard-badges-grid mt-3"></div></div>
             <div class="cyber-card"><div class="cyber-card-title">KÉPZÉSI ÁLLAPOT</div><div class="training-status mt-3"><div class="training-status-icon">🛡</div><div class="min-w-0 flex-1"><div id="dashboard-status-title" class="font-black text-white text-sm">Kapitánysági kiképzés folyamatban</div><div id="dashboard-status-copy" class="text-[10px] text-slate-500 mt-1">Folytassa a következő kijelölt modullal.</div></div></div><div class="flex flex-wrap gap-2 mt-3"><span class="status-chip status-chip-cyan">● RENDSZER AKTÍV</span><span class="status-chip">● ADATOK SZINKRONIZÁLVA</span></div></div>
         </div>
 
