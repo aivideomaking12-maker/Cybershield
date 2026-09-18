@@ -11,6 +11,7 @@ window.App = (function() {
      * Initializes the app on page load
      */
     async function init() {
+        if (window.Navigation && window.Navigation.initTheme) window.Navigation.initTheme();
         console.log("CyberShield program inicializálása...");
         
         // Update UI status banner based on Supabase Connection
