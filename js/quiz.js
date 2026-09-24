@@ -846,19 +846,13 @@ window.Quiz = (function() {
     function initOfficeErrorFinder() {
         const state = window.Progress.getState();
         const foundErrors = state.officeErrors || [];
+        const triggers = document.querySelectorAll('#office-interactive-scene .office-hit');
 
-        // Set up click triggers on SVG elements
-        const triggers = document.querySelectorAll('#office-interactive-svg .error-trigger');
         triggers.forEach(trigger => {
             const errorId = trigger.getAttribute('data-id');
-            
-            // Check if already found, color accordingly if needed
-            if (foundErrors.includes(errorId)) {
-                addSuccessIndicator(errorId);
-            }
-
-            // Click event
+            trigger.classList.toggle('found', foundErrors.includes(errorId));
             trigger.onclick = (e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 selectOfficeError(errorId);
             };
@@ -872,19 +866,21 @@ window.Quiz = (function() {
         if (!errorInfo) return;
 
         const isNew = window.Progress.addOfficeError(errorId);
+        const trigger = document.querySelector(`#office-interactive-scene .office-hit[data-id="${errorId}"]`);
+        if (trigger) trigger.classList.add('found');
+
         const descBox = document.getElementById('office-error-description');
 
         if (isNew) {
-            addSuccessIndicator(errorId);
             updateOfficeCounter();
             window.Gamification.showToast("Biztonsági rés megtalálva!", `+20 XP: ${errorInfo.title}`, 'xp');
-            
+
             if (descBox) {
                 descBox.innerHTML = `
                     <div class="space-y-1">
-                        <span class="inline-block px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 text-[10px] font-mono font-bold uppercase tracking-wider mb-1 border border-emerald-500/30">✓ Új Audit Találat</span>
-                        <h4 class="text-sm font-bold text-white">${errorInfo.title}</h4>
-                        <p class="text-xs text-slate-300 leading-normal">${errorInfo.desc}</p>
+                        <span class="office-found-label">✓ ÚJ AUDIT TALÁLAT</span>
+                        <h4>${errorInfo.title}</h4>
+                        <p>${errorInfo.desc}</p>
                     </div>
                 `;
             }
@@ -892,94 +888,29 @@ window.Quiz = (function() {
             if (descBox) {
                 descBox.innerHTML = `
                     <div class="space-y-1">
-                        <span class="inline-block px-2 py-0.5 rounded bg-slate-800 text-slate-400 text-[10px] font-mono font-bold uppercase tracking-wider mb-1">Már auditálva</span>
-                        <h4 class="text-sm font-bold text-slate-200">${errorInfo.title}</h4>
-                        <p class="text-xs text-slate-400 leading-normal">${errorInfo.desc}</p>
+                        <span class="office-found-label" style="color:#7d93a8;background:#0b1724;border-color:#21384d">MÁR AUDITÁLVA</span>
+                        <h4>${errorInfo.title}</h4>
+                        <p>${errorInfo.desc}</p>
                     </div>
                 `;
             }
         }
     }
 
-    function addSuccessIndicator(errorId) {
-        const overlayContainer = document.getElementById('office-success-overlays');
-        if (!overlayContainer) return;
-
-        // Prevent duplicate overlays
-        if (document.getElementById(`success-overlay-${errorId}`)) return;
-
-        // Find the trigger element
-        const trigger = document.querySelector(`#office-interactive-svg .error-trigger[data-id="${errorId}"]`);
-        if (!trigger) return;
-
-        // Absolute precision center coordinates for placing success highlights over each of the 15 risks
-        const coords = {
-            'open-window': { cx: 170, cy: 165 },
-            'board-pass': { cx: 377, cy: 205 },
-            'sensitive-board': { cx: 660, cy: 230 },
-            'open-drawer': { cx: 65, cy: 412 },
-            'unlocked-pc1': { cx: 330, cy: 300 },
-            'monitor-pass': { cx: 368, cy: 321 },
-            'unattended-phone': { cx: 402, cy: 423 },
-            'abandoned-usb': { cx: 356, cy: 403 },
-            'desk-document': { cx: 702, cy: 392 },
-            'coffee-hazard': { cx: 544, cy: 416 },
-            'exposed-router': { cx: 640, cy: 447 },
-            'printer-document': { cx: 885, cy: 291 },
-            'cctv-angle': { cx: 254, cy: 44 },
-            'unshredded-bin': { cx: 210, cy: 430 },
-            'unattended-visitor': { cx: 500, cy: 180 }
-        };
-
-        // If no coordinate is defined for this errorId, do not render a center fallback to avoid visual clutter
-        if (!coords[errorId]) return;
-
-        const { cx, cy } = coords[errorId];
-
-        // Create elegant, low-opacity glowing highlight ring (no solid circle, and absolutely NO checkmark tick inside the scene)
-        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        group.id = `success-overlay-${errorId}`;
-
-        // Soft outer glow pulse
-        const glow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        glow.setAttribute("cx", cx);
-        glow.setAttribute("cy", cy);
-        glow.setAttribute("r", 15);
-        glow.setAttribute("fill", "#10b981");
-        glow.setAttribute("fill-opacity", "0.2");
-        glow.setAttribute("class", "animate-pulse");
-
-        // Dotted target style ring
-        const ring = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        ring.setAttribute("cx", cx);
-        ring.setAttribute("cy", cy);
-        ring.setAttribute("r", 12);
-        ring.setAttribute("fill", "none");
-        ring.setAttribute("stroke", "#10b981");
-        ring.setAttribute("stroke-width", "1.5");
-        ring.setAttribute("stroke-dasharray", "3 2");
-
-        group.appendChild(glow);
-        group.appendChild(ring);
-        overlayContainer.appendChild(group);
-    }
-
     function updateOfficeCounter() {
         const state = window.Progress.getState();
-        const count = state.officeErrors.length;
+        const count = (state.officeErrors || []).length;
         const total = 15;
 
         const counterText = document.getElementById('office-errors-counter');
         const progressBar = document.getElementById('office-errors-bar');
 
-        if (counterText) counterText.innerText = `Megtalált hibák: ${count} / ${total}`;
-        if (progressBar) {
-            const percent = (count / total) * 100;
-            progressBar.style.width = `${percent}%`;
-            if (count === total) {
-                progressBar.className = "bg-emerald-500 h-full transition-all duration-500";
-                window.Gamification.showToast("Tökéletes audit!", "Megtalálta az összes biztonsági hibát az irodában! Elit auditor jelvény szerzve.", 'badge');
-            }
+        if (counterText) counterText.innerText = `${count} / ${total}`;
+        if (progressBar) progressBar.style.width = `${(count / total) * 100}%`;
+
+        if (count === total && !window.__officeAuditCompleteToastShown) {
+            window.__officeAuditCompleteToastShown = true;
+            window.Gamification.showToast("Tökéletes audit!", "Megtalálta az összes biztonsági hibát az irodában! Elit auditor jelvény szerzve.", 'badge');
         }
     }
 
@@ -987,15 +918,20 @@ window.Quiz = (function() {
         const state = window.Progress.getState();
         state.officeErrors = [];
         window.Progress.save();
+        window.__officeAuditCompleteToastShown = false;
 
-        // Clear overlays
-        const overlayContainer = document.getElementById('office-success-overlays');
-        if (overlayContainer) overlayContainer.innerHTML = '';
-
+        document.querySelectorAll('#office-interactive-scene .office-hit').forEach(el => el.classList.remove('found'));
         updateOfficeCounter();
+
         const descBox = document.getElementById('office-error-description');
         if (descBox) {
-            descBox.innerHTML = `<em>Kattintson az egyik biztonsági hibára az iroda rajzán a vizsgálat elindításához...</em>`;
+            descBox.innerHTML = `
+                <div class="description-empty">
+                    <span>◉</span>
+                    <b>VIZSGÁLAT INDÍTÁSRA KÉSZ</b>
+                    <p>Keresse meg az iroda fizikai és információbiztonsági hiányosságait.</p>
+                </div>
+            `;
         }
     }
 
