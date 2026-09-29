@@ -239,6 +239,27 @@ window.QuizData = {
         }
     },
 
+    // Spatial metadata used by the interactive office scene. The visual hitboxes
+    // remain in index.html so the scene can be tuned without changing the audit data.
+    // `discovered` is runtime state and is persisted through Progress.officeErrors.
+    officeErrorMeta: {
+        "open-window": { position: "back-wall / window", hitbox: "hit-window" },
+        "board-pass": { position: "back-wall / pinboard", hitbox: "hit-board-pass" },
+        "sensitive-board": { position: "back-wall / whiteboard", hitbox: "hit-sensitive-board" },
+        "open-drawer": { position: "left side / filing cabinet", hitbox: "hit-drawer" },
+        "unlocked-pc1": { position: "desk 1 / monitor", hitbox: "hit-pc" },
+        "monitor-pass": { position: "desk 1 / monitor bezel", hitbox: "hit-monitor-pass" },
+        "unattended-phone": { position: "desk 1 / service phone", hitbox: "hit-phone" },
+        "abandoned-usb": { position: "desk 1 / keyboard area", hitbox: "hit-usb" },
+        "desk-document": { position: "desk 1 / document stack", hitbox: "hit-document" },
+        "coffee-hazard": { position: "desk 1 / power strip", hitbox: "hit-coffee" },
+        "exposed-router": { position: "desk underside / LAN switch", hitbox: "hit-router" },
+        "printer-document": { position: "right side / printer", hitbox: "hit-printer" },
+        "cctv-angle": { position: "back-wall / CCTV", hitbox: "hit-cctv" },
+        "unshredded-bin": { position: "floor / paper bin", hitbox: "hit-bin" },
+        "unattended-visitor": { position: "office entrance", hitbox: "hit-visitor" }
+    },
+
     // 3. Escape Room Riddles Database (8 levels)
     escaperoom: [
         {
@@ -668,7 +689,16 @@ window.QuizData = {
     }
 };
 
-window.Quiz = (function() {
+Object.entries(window.QuizData.officeErrorMeta || {}).forEach(([id, meta]) => {
+    if (window.QuizData.officeErrors[id]) {
+        window.QuizData.officeErrors[id].id = id;
+        window.QuizData.officeErrors[id].position = meta.position;
+        window.QuizData.officeErrors[id].hitbox = meta.hitbox;
+        window.QuizData.officeErrors[id].discovered = false;
+    }
+});
+
+window.Quiz= (function() {
     let activeDiagIndex = 0;
     let diagAnswers = []; // records indices of user answers
 
@@ -843,9 +873,76 @@ window.Quiz = (function() {
     // ==============================================
     // INTERACTIVE OFFICE ERROR FINDER METHODS
     // ==============================================
+    const OFFICE_AUDIT_TOTAL = 15;
+    const OFFICE_AUDIT_DURATION = 5 * 60;
+    let officeAuditTimer = null;
+    let officeAuditStartedAt = null;
+    let officeAuditRemaining = OFFICE_AUDIT_DURATION;
+    let officeAuditMisses = 0;
+    let officeAuditCompleted = false;
+
+    function getOfficeErrorDefinition(errorId) {
+        const info = window.QuizData.officeErrors[errorId];
+        const meta = window.QuizData.officeErrorMeta?.[errorId] || {};
+        if (!info) return null;
+        return { ...info, id: errorId, position: meta.position || '', hitbox: meta.hitbox || '', discovered: false };
+    }
+
+    function stopOfficeAuditTimer() {
+        if (officeAuditTimer) {
+            clearInterval(officeAuditTimer);
+            officeAuditTimer = null;
+        }
+    }
+
+    function formatAuditTime(seconds) {
+        const safe = Math.max(0, Math.floor(seconds));
+        const min = Math.floor(safe / 60).toString().padStart(2, '0');
+        const sec = (safe % 60).toString().padStart(2, '0');
+        return `${min}:${sec}`;
+    }
+
+    function renderOfficeAuditTimer() {
+        const timeEl = document.getElementById('office-time');
+        const missesEl = document.getElementById('office-misses');
+        if (timeEl) {
+            timeEl.textContent = formatAuditTime(officeAuditRemaining);
+            timeEl.classList.toggle('office-time-critical', officeAuditRemaining <= 30);
+        }
+        if (missesEl) missesEl.textContent = String(officeAuditMisses);
+    }
+
+    function startOfficeAuditTimer() {
+        stopOfficeAuditTimer();
+        officeAuditStartedAt = Date.now();
+        officeAuditRemaining = OFFICE_AUDIT_DURATION;
+        renderOfficeAuditTimer();
+
+        officeAuditTimer = setInterval(() => {
+            if (officeAuditCompleted) return;
+            const elapsed = Math.floor((Date.now() - officeAuditStartedAt) / 1000);
+            officeAuditRemaining = Math.max(0, OFFICE_AUDIT_DURATION - elapsed);
+            renderOfficeAuditTimer();
+
+            if (officeAuditRemaining <= 0) {
+                stopOfficeAuditTimer();
+                window.Gamification.showToast(
+                    "Az ellenőrzési idő lejárt",
+                    "Az audit újraindítható, a már felfedezett hibák törlésével.",
+                    "warning"
+                );
+            }
+        }, 1000);
+    }
+
     function initOfficeErrorFinder() {
+        stopOfficeAuditTimer();
+        officeAuditCompleted = false;
+        officeAuditMisses = 0;
+
         const state = window.Progress.getState();
         const foundErrors = state.officeErrors || [];
+        const scene = document.getElementById('office-interactive-scene');
         const triggers = document.querySelectorAll('#office-interactive-scene .office-hit');
 
         triggers.forEach(trigger => {
@@ -858,16 +955,54 @@ window.Quiz = (function() {
             };
         });
 
+        if (scene) {
+            scene.onclick = (e) => {
+                if (e.target.closest('.office-hit')) return;
+                officeAuditMisses += 1;
+                renderOfficeAuditTimer();
+                scene.classList.remove('office-miss-flash');
+                void scene.offsetWidth;
+                scene.classList.add('office-miss-flash');
+
+                const descBox = document.getElementById('office-error-description');
+                if (descBox) {
+                    descBox.innerHTML = `
+                        <div class="office-miss-message">
+                            <span>!</span>
+                            <b>NEM TALÁLT BIZTONSÁGI HIBÁT</b>
+                            <p>Ezen a ponton nincs azonosítható audit-találat. Vizsgálja meg a környezet más részét.</p>
+                        </div>
+                    `;
+                }
+            };
+        }
+
+        const completion = document.getElementById('office-completion');
+        if (completion) completion.classList.add('hidden');
+
         updateOfficeCounter();
+        const currentCount = (window.Progress.getState().officeErrors || []).length;
+        if (currentCount < OFFICE_AUDIT_TOTAL) {
+            startOfficeAuditTimer();
+        } else {
+            completeOfficeAudit();
+        }
     }
 
     function selectOfficeError(errorId) {
-        const errorInfo = window.QuizData.officeErrors[errorId];
+        const errorInfo = getOfficeErrorDefinition(errorId);
         if (!errorInfo) return;
 
+        const state = window.Progress.getState();
         const isNew = window.Progress.addOfficeError(errorId);
         const trigger = document.querySelector(`#office-interactive-scene .office-hit[data-id="${errorId}"]`);
-        if (trigger) trigger.classList.add('found');
+        if (trigger) {
+            trigger.classList.add('found');
+            trigger.animate(
+                [{ transform: 'scale(1)' }, { transform: 'scale(1.035)' }, { transform: 'scale(1)' }],
+                { duration: 300, easing: 'ease-out' }
+            );
+        }
 
         const descBox = document.getElementById('office-error-description');
 
@@ -877,62 +1012,142 @@ window.Quiz = (function() {
 
             if (descBox) {
                 descBox.innerHTML = `
-                    <div class="space-y-1">
-                        <span class="office-found-label">✓ ÚJ AUDIT TALÁLAT</span>
+                    <div>
+                        <span class="office-found-label">✓ HIBA FELFEDEZVE</span>
                         <h4>${errorInfo.title}</h4>
                         <p>${errorInfo.desc}</p>
                     </div>
                 `;
             }
-        } else {
-            if (descBox) {
-                descBox.innerHTML = `
-                    <div class="space-y-1">
-                        <span class="office-found-label" style="color:#7d93a8;background:#0b1724;border-color:#21384d">MÁR AUDITÁLVA</span>
-                        <h4>${errorInfo.title}</h4>
-                        <p>${errorInfo.desc}</p>
-                    </div>
-                `;
-            }
+        } else if (descBox) {
+            descBox.innerHTML = `
+                <div>
+                    <span class="office-found-label office-found-existing">MÁR AZONOSÍTVA</span>
+                    <h4>${errorInfo.title}</h4>
+                    <p>${errorInfo.desc}</p>
+                </div>
+            `;
         }
+
+        const newCount = (window.Progress.getState().officeErrors || []).length;
+        if (newCount >= OFFICE_AUDIT_TOTAL && !officeAuditCompleted) {
+            completeOfficeAudit();
+        }
+    }
+
+    async function completeOfficeAudit() {
+        officeAuditCompleted = true;
+        stopOfficeAuditTimer();
+
+        const elapsed = OFFICE_AUDIT_DURATION - officeAuditRemaining;
+        const score = Math.max(0, 1500 - (officeAuditMisses * 25));
+
+        const finalTime = document.getElementById('office-final-time');
+        const finalMisses = document.getElementById('office-final-misses');
+        const finalScore = document.getElementById('office-final-score');
+        if (window.Progress.setOfficeAuditStats) {
+            window.Progress.setOfficeAuditStats({
+                elapsedSeconds: elapsed,
+                wrongClicks: officeAuditMisses,
+                score,
+                completedAt: new Date().toISOString()
+            });
+        }
+        if (finalTime) finalTime.textContent = formatAuditTime(elapsed);
+        if (finalMisses) finalMisses.textContent = String(officeAuditMisses);
+        if (finalScore) finalScore.textContent = String(score);
+
+        // Reuse the existing module-completion / results pipeline. XP is already
+        // awarded once per discovered office error by Progress.addOfficeError().
+        if (!window.Progress.isModuleCompleted('office-security-audit')) {
+            await window.Progress.completeModule('office-security-audit', score, 1500, 0);
+        }
+
+        const completion = document.getElementById('office-completion');
+        if (completion) completion.classList.remove('hidden');
+
+        window.Gamification.showToast(
+            "Ellenőrzés befejezve",
+            `15/15 hiba azonosítva • ${formatAuditTime(elapsed)} • ${score} pont`,
+            "badge"
+        );
+        window.Gamification.launchConfetti();
+        updateOfficeCounter();
     }
 
     function updateOfficeCounter() {
         const state = window.Progress.getState();
-        const count = (state.officeErrors || []).length;
-        const total = 15;
+        const count = Math.min((state.officeErrors || []).length, OFFICE_AUDIT_TOTAL);
+        const percentage = (count / OFFICE_AUDIT_TOTAL) * 100;
 
         const counterText = document.getElementById('office-errors-counter');
         const progressBar = document.getElementById('office-errors-bar');
+        const miniCount = document.getElementById('office-found-mini');
+        const miniProgress = document.getElementById('office-mini-progress');
 
-        if (counterText) counterText.innerText = `${count} / ${total}`;
-        if (progressBar) progressBar.style.width = `${(count / total) * 100}%`;
+        if (counterText) counterText.textContent = `${count} / ${OFFICE_AUDIT_TOTAL}`;
+        if (progressBar) progressBar.style.width = `${percentage}%`;
+        if (miniCount) miniCount.textContent = `${count} / ${OFFICE_AUDIT_TOTAL}`;
+        if (miniProgress) miniProgress.style.width = `${percentage}%`;
 
-        if (count === total && !window.__officeAuditCompleteToastShown) {
-            window.__officeAuditCompleteToastShown = true;
-            window.Gamification.showToast("Tökéletes audit!", "Megtalálta az összes biztonsági hibát az irodában! Elit auditor jelvény szerzve.", 'badge');
+        const completion = document.getElementById('office-completion');
+        if (count < OFFICE_AUDIT_TOTAL && completion) completion.classList.add('hidden');
+
+        if (count === OFFICE_AUDIT_TOTAL && !officeAuditCompleted) {
+            completeOfficeAudit();
         }
     }
 
     function resetOfficeErrorFinder() {
+        stopOfficeAuditTimer();
+        officeAuditCompleted = false;
+        officeAuditMisses = 0;
+        officeAuditRemaining = OFFICE_AUDIT_DURATION;
+
         const state = window.Progress.getState();
         state.officeErrors = [];
-        window.Progress.save();
-        window.__officeAuditCompleteToastShown = false;
+        if (window.Progress.setOfficeAuditStats) {
+            window.Progress.setOfficeAuditStats({
+                elapsedSeconds: 0,
+                wrongClicks: 0,
+                score: 0,
+                completedAt: null
+            });
+        } else {
+            window.Progress.save();
+        }
+
+        const scene = document.getElementById('office-interactive-scene');
+        if (scene) {
+            scene.classList.remove('office-miss-flash');
+            scene.onclick = null;
+        }
 
         document.querySelectorAll('#office-interactive-scene .office-hit').forEach(el => el.classList.remove('found'));
-        updateOfficeCounter();
+
+        const completion = document.getElementById('office-completion');
+        if (completion) completion.classList.add('hidden');
 
         const descBox = document.getElementById('office-error-description');
         if (descBox) {
             descBox.innerHTML = `
                 <div class="description-empty">
-                    <span>◉</span>
-                    <b>VIZSGÁLAT INDÍTÁSRA KÉSZ</b>
-                    <p>Keresse meg az iroda fizikai és információbiztonsági hiányosságait.</p>
+                    <span>⌖</span><b>VIZSGÁLAT INDÍTÁSRA KÉSZ</b>
+                    <p>Fizikai hozzáférés, információszivárgás, eszközbiztonság és emberi tényezők egyaránt vizsgálhatók.</p>
                 </div>
             `;
         }
+
+        renderOfficeAuditTimer();
+        updateOfficeCounter();
+        startOfficeAuditTimer();
+    }
+
+    function destroyOfficeErrorFinder() {
+        stopOfficeAuditTimer();
+        const scene = document.getElementById('office-interactive-scene');
+        if (scene) scene.onclick = null;
+        document.querySelectorAll('#office-interactive-scene .office-hit').forEach(el => el.onclick = null);
     }
 
     // ==============================================
@@ -1057,6 +1272,7 @@ window.Quiz = (function() {
         selectOfficeError: selectOfficeError,
         initOfficeErrorFinder: initOfficeErrorFinder,
         resetOfficeErrorFinder: resetOfficeErrorFinder,
+        destroyOfficeErrorFinder: destroyOfficeErrorFinder,
         initEscapeRoom: initEscapeRoom,
         selectEscapeRoomAnswer: selectEscapeRoomAnswer,
         renderEscapeRoomRiddle: renderEscapeRoomRiddle
