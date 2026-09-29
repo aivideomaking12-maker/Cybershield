@@ -593,171 +593,194 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- SCREEN 6: EXTRA TASK: OFFICE ERROR FINDER -->
+        <!-- SCREEN 6: INFORMATION SECURITY OFFICE AUDIT -->
         <!-- ============================================== -->
-        <section id="screen-office-errors" class="hidden transition-all duration-500 w-full max-w-7xl mx-auto">
-    <div class="office-audit-shell">
-        <div class="office-audit-head">
-            <div>
-                <span class="office-kicker">GYAKORLATI AUDIT // PHYSICAL SECURITY</span>
-                <h2 class="office-title">Irodai Hiba-Kereső</h2>
-                <p class="office-subtitle">Vizsgálja át a teljes helyiséget. Mind a <strong>15 biztonsági hiányosság</strong> el van rejtve a jelenetben. Kattintással jelölje meg a gyanús tárgyakat.</p>
-            </div>
-            <div class="office-counter-card">
-                <div class="office-counter-label">AUDIT ÁLLAPOT</div>
-                <div id="office-errors-counter" class="office-counter">0 / 15</div>
-                <div class="office-progress"><div id="office-errors-bar"></div></div>
-            </div>
-        </div>
-
-        <div class="office-game-frame">
-            <div class="office-scene-wrap">
-                <div class="office-scene" id="office-interactive-scene" aria-label="Interaktív információbiztonsági iroda">
-
-                    <!-- Back wall -->
-                    <div class="room-backwall">
-                        <div class="wall-panel panel-a"></div><div class="wall-panel panel-b"></div>
-                        <div class="ceiling-light"></div>
-                        <div class="wall-clock"><span>10</span><b>42</b></div>
-
-                        <!-- 1. OPEN WINDOW -->
-                        <button class="office-hit window-hit" data-id="open-window" aria-label="Nyitott ablak">
-                            <span class="window-frame"><i></i><i></i></span>
-                            <span class="window-sash"></span>
-                            <span class="window-glare"></span>
-                        </button>
-
-                        <!-- 2. PASSWORDS ON BOARD -->
-                        <button class="office-hit pinboard-hit" data-id="board-pass" aria-label="Jelszó a faliújságon">
-                            <span class="pinboard"></span>
-                            <span class="note note-password"><b>PASSWORD</b><strong>BRFK_2026</strong></span>
-                            <span class="note-pin"></span>
-                            <span class="note note-normal n2">MEETING<br>08:00</span>
-                        </button>
-
-                        <!-- 3. SENSITIVE DATA ON WHITEBOARD -->
-                        <button class="office-hit whiteboard-hit" data-id="sensitive-board" aria-label="Bizalmas adatok a táblán">
-                            <span class="whiteboard-frame"></span>
-                            <span class="whiteboard-content">
-                                <b>NYOMOZÁS // ÜGY 24-118</b>
-                                <em>Gyanúsított: KOVÁCS J.<br>Azonosító: BRFK-17-44<br>Hálózat: BELSO-LAN</em>
-                                <i></i><i></i>
-                            </span>
-                            <span class="board-tray"></span>
-                        </button>
-
-                        <!-- 15. UNATTENDED VISITOR -->
-                        <button class="office-hit visitor-hit" data-id="unattended-visitor" aria-label="Kíséret nélküli látogató">
-                            <span class="visitor-head"></span>
-                            <span class="visitor-body"></span>
-                            <span class="visitor-leg l"></span><span class="visitor-leg r"></span>
-                            <span class="no-badge">?</span>
-                        </button>
-
-                        <!-- 13. CCTV -->
-                        <button class="office-hit cctv-hit" data-id="cctv-angle" aria-label="Rosszul pozicionált biztonsági kamera">
-                            <span class="cctv-mount"></span><span class="cctv-body"></span><span class="cctv-lens"></span>
-                            <span class="cctv-beam"></span>
-                        </button>
+        <section id="screen-office-errors" class="hidden transition-all duration-500 w-full max-w-[1500px] mx-auto">
+            <div class="office-audit-shell">
+                <header class="office-audit-head">
+                    <div class="office-heading">
+                        <div class="office-kicker"><span class="office-live-dot"></span> CYBERSHIELD // GYAKORLATI SZIMULÁCIÓ</div>
+                        <h2 class="office-title">Információbiztonsági ellenőrzés</h2>
+                        <p class="office-subtitle">Vizsgálja át a teljes hivatali helyiséget, és azonosítsa mind a <strong>15 információbiztonsági hibát</strong>. A jelenet szándékosan tartalmaz fizikai, technikai és emberi kockázatokat.</p>
                     </div>
-
-                    <!-- Floor -->
-                    <div class="room-floor">
-                        <div class="floor-grid"></div>
-                        <div class="floor-rug"></div>
-
-                        <!-- 4. OPEN FILE DRAWER -->
-                        <button class="office-hit cabinet-hit" data-id="open-drawer" aria-label="Nyitott iratszekrény">
-                            <span class="cabinet-body"></span>
-                            <span class="drawer d1"><b>AKTA</b></span>
-                            <span class="drawer d2"></span>
-                            <span class="drawer d3"></span>
-                            <span class="secret-paper">SZIGORÚAN<br>TITKOS</span>
-                        </button>
-
-                        <!-- Desk 1 -->
-                        <div class="desk desk-left">
-                            <!-- 5. UNLOCKED PC -->
-                            <button class="office-hit pc-hit" data-id="unlocked-pc1" aria-label="Feloldott számítógép">
-                                <span class="monitor"></span><span class="monitor-screen">
-                                    <b>TEAMS</b><small>Üzenetek  ·  Fájlok  ·  Mail</small><i>● AKTÍV</i>
-                                </span><span class="monitor-stand"></span>
-                            </button>
-
-                            <!-- 6. PASSWORD ON MONITOR -->
-                            <button class="office-hit monitor-pass-hit" data-id="monitor-pass" aria-label="Monitorra ragasztott jelszó">
-                                <span class="postit">jelszó:<br><b>Rendor!2026</b></span>
-                            </button>
-
-                            <!-- 7. UNATTENDED PHONE -->
-                            <button class="office-hit phone-hit" data-id="unattended-phone" aria-label="Felügyelet nélküli telefon">
-                                <span class="phone-body"><i>12:08</i><b>🔔</b></span>
-                            </button>
-
-                            <!-- 8. UNKNOWN USB -->
-                            <button class="office-hit usb-hit" data-id="abandoned-usb" aria-label="Ismeretlen USB meghajtó">
-                                <span class="usb-body"><b>USB</b></span><span class="usb-metal"></span>
-                            </button>
-
-                            <!-- 9. SENSITIVE DOCUMENT ON DESK -->
-                            <button class="office-hit desk-document-hit" data-id="desk-document" aria-label="Szigorúan titkos irat az asztalon">
-                                <span class="document-paper"><b>SZOLGÁLATI IRAT</b><em>MINŐSÍTETT</em><small>Ügyazonosító: 24-118</small></span>
-                            </button>
-
-                            <!-- 10. COFFEE -->
-                            <button class="office-hit coffee-hit" data-id="coffee-hazard" aria-label="Kávé az elektromos elosztó mellett">
-                                <span class="coffee-cup"></span><span class="coffee-handle"></span><span class="coffee-liquid"></span>
-                            </button>
-
-                            <!-- 11. EXPOSED ROUTER -->
-                            <button class="office-hit router-hit" data-id="exposed-router" aria-label="Védtelen hálózati elosztó">
-                                <span class="router-box"><i></i><i></i><i class="open-port"></i><b>LAN SWITCH</b></span>
-                                <span class="lan-cable"></span>
-                            </button>
+                    <div class="office-hud">
+                        <div class="office-hud-cell">
+                            <span>AZONOSÍTVA</span>
+                            <strong id="office-errors-counter">0 / 15</strong>
                         </div>
-
-                        <!-- 12. PRINTER -->
-                        <div class="printer">
-                            <div class="printer-top"></div><div class="printer-body"><b>SECURE PRINT</b><i></i></div>
-                            <button class="office-hit printer-hit" data-id="printer-document" aria-label="Nyomtatón felejtett bizalmas dokumentum">
-                                <span class="printed-page"><b>BIZALMAS</b><small>ÜGYIRAT 24-118</small><i></i></span>
-                            </button>
+                        <div class="office-hud-cell">
+                            <span>HÁTRALÉVŐ IDŐ</span>
+                            <strong id="office-time">05:00</strong>
                         </div>
+                        <div class="office-hud-cell">
+                            <span>HIBÁS KATTINTÁS</span>
+                            <strong id="office-misses">0</strong>
+                        </div>
+                        <div class="office-progress-wide"><div id="office-errors-bar"></div></div>
+                    </div>
+                </header>
 
-                        <!-- 14. BIN WITH DOCUMENT -->
-                        <button class="office-hit bin-hit" data-id="unshredded-bin" aria-label="Megsemmisítetlen akta a kukában">
-                            <span class="bin-body"></span><span class="bin-rim"></span>
-                            <span class="bin-paper">BIZALMAS<br><b>AKTA</b></span>
-                        </button>
+                <div class="office-game-frame">
+                    <div class="office-scene-wrap">
+                        <div class="office-scene" id="office-interactive-scene" aria-label="Interaktív magyar rendőrségi hivatali iroda">
+                            <div class="office-ceiling"></div>
+                            <div class="office-back-wall">
+                                <div class="wall-trim"></div>
+                                <div class="wall-window">
+                                    <div class="window-outside"><span>HIVATALI ÉPÜLET</span></div>
+                                    <div class="window-glass"></div><div class="window-open-sash"></div>
+                                    <span class="window-handle"></span>
+                                </div>
 
-                        <div class="scene-label">CYBERSHIELD // SECURITY OPERATIONS OFFICE</div>
-                        <div class="scene-crosshair"></div>
+                                <div class="wall-brand">MAGYAR RENDŐRSÉG <small>INFORMÁCIÓBIZTONSÁGI TERÜLET</small></div>
+
+                                <button class="office-hit hit-window" data-id="open-window" aria-label="Nyitott ablak">
+                                    <span class="hit-target"></span>
+                                </button>
+
+                                <div class="pinboard">
+                                    <div class="board-header">SZOLGÁLATI INFORMÁCIÓK <span>PINBOARD</span></div>
+                                    <div class="board-note note-password"><small>VPN BELÉPÉS</small><b>BRFK_2026</b><em>jelszó: Rendor!2026</em></div>
+                                    <div class="board-note"><small>ÉRTEKEZLET</small><b>08:00 / 2. tárgyaló</b></div>
+                                    <div class="board-note"><small>ÜGYELET</small><b>21-es mellék</b></div>
+                                    <div class="board-pin"></div>
+                                    <button class="office-hit hit-board-pass" data-id="board-pass" aria-label="Faliújságon hagyott jelszó"></button>
+                                </div>
+
+                                <div class="whiteboard">
+                                    <div class="whiteboard-top"><span>OPERATÍV ÁLLAPOT</span><i>● LIVE</i></div>
+                                    <div class="whiteboard-line">NYOMOZÁS // ÜGY 24-118</div>
+                                    <div class="whiteboard-data"><b>Gyanúsított:</b> KOVÁCS J.<br><b>Azonosító:</b> BRFK-17-44<br><b>Hálózat:</b> BELSO-LAN</div>
+                                    <div class="whiteboard-alert">BIZALMAS / BELSŐ HASZNÁLATRA</div>
+                                    <button class="office-hit hit-sensitive-board" data-id="sensitive-board" aria-label="Bizalmas adatok a fehértáblán"></button>
+                                </div>
+
+                                <div class="wall-clock"><b>10</b><span>42</span><small>LOCAL</small></div>
+
+                                <div class="cctv">
+                                    <span class="cctv-mount"></span><span class="cctv-body"></span><span class="cctv-lens"></span>
+                                    <span class="cctv-led"></span>
+                                    <button class="office-hit hit-cctv" data-id="cctv-angle" aria-label="Rosszul pozicionált biztonsági kamera"></button>
+                                </div>
+                            </div>
+
+                            <div class="office-floor">
+                                <div class="floor-perspective"></div>
+                                <div class="floor-line"></div>
+
+                                <div class="left-cabinet">
+                                    <div class="cabinet-top"></div>
+                                    <div class="cabinet-drawer open"><span>AKTA</span><b>SZIGORÚAN TITKOS</b></div>
+                                    <div class="cabinet-drawer"></div><div class="cabinet-drawer"></div>
+                                    <button class="office-hit hit-drawer" data-id="open-drawer" aria-label="Nyitott iratszekrény"></button>
+                                </div>
+
+                                <div class="desk desk-one">
+                                    <div class="desk-top"></div><div class="desk-front"></div><div class="desk-leg left"></div><div class="desk-leg right"></div>
+                                    <div class="monitor monitor-main">
+                                        <div class="monitor-frame"><div class="monitor-ui"><b>SECURE DESKTOP</b><span>TEAMS  •  MAIL  •  FILES</span><em>● ACTIVE SESSION</em></div></div>
+                                        <div class="monitor-neck"></div><div class="monitor-base"></div>
+                                    </div>
+                                    <div class="keyboard"></div><div class="mouse"></div>
+                                    <div class="desk-phone">POLICE<br><b>112</b></div>
+                                    <div class="postit"><small>JELSZÓ</small><b>Rendor!2026</b></div>
+                                    <div class="service-phone"><span>12:08</span><b>●</b></div>
+                                    <div class="usb-drive"><span>USB</span></div>
+                                    <div class="coffee"><i></i><span></span></div>
+                                    <div class="power-strip"><b>230V</b><i></i><i></i><i></i></div>
+                                    <div class="desk-document"><small>MINŐSÍTETT</small><b>SZOLGÁLATI IRAT</b><span>ÜGYAZONOSÍTÓ: 24-118</span></div>
+
+                                    <button class="office-hit hit-pc" data-id="unlocked-pc1" aria-label="Magára hagyott feloldott számítógép"></button>
+                                    <button class="office-hit hit-monitor-pass" data-id="monitor-pass" aria-label="Monitorra ragasztott jelszó"></button>
+                                    <button class="office-hit hit-phone" data-id="unattended-phone" aria-label="Felügyelet nélküli szolgálati telefon"></button>
+                                    <button class="office-hit hit-usb" data-id="abandoned-usb" aria-label="Ottfelejtett USB meghajtó"></button>
+                                    <button class="office-hit hit-document" data-id="desk-document" aria-label="Szigorúan titkos irat az asztalon"></button>
+                                    <button class="office-hit hit-coffee" data-id="coffee-hazard" aria-label="Kávé az elektromos elosztó mellett"></button>
+                                    <button class="office-hit hit-router" data-id="exposed-router" aria-label="Védtelen hálózati elosztó"></button>
+                                </div>
+
+                                <div class="network-box">
+                                    <span class="network-title">LAN SWITCH</span><div class="network-leds"><i></i><i></i><i></i><i></i></div>
+                                    <div class="ethernet-ports"><b></b><b></b><b class="open"></b><b></b></div>
+                                    <span class="ethernet-cable"></span>
+                                </div>
+
+                                <div class="printer-unit">
+                                    <div class="printer-screen">SECURE PRINT</div><div class="printer-slot"></div>
+                                    <div class="printer-paper"><small>BIZALMAS</small><b>ÜGYIRAT 24-118</b><span>MINŐSÍTETT</span></div>
+                                    <button class="office-hit hit-printer" data-id="printer-document" aria-label="Nyomtatón felejtett bizalmas dokumentum"></button>
+                                </div>
+
+                                <div class="shredder"><div class="shredder-top">SHREDDER</div><div class="shredder-slot"></div><div class="shredder-body"></div><div class="shredder-status">READY</div></div>
+
+                                <div class="paper-bin"><div class="bin-rim"></div><div class="bin-body"></div><div class="bin-paper">BIZALMAS<br><b>AKTA</b></div>
+                                    <button class="office-hit hit-bin" data-id="unshredded-bin" aria-label="Megsemmisítetlen bizalmas akta a kukában"></button>
+                                </div>
+
+                                <div class="second-desk">
+                                    <div class="desk-top"></div><div class="desk-leg left"></div><div class="desk-leg right"></div>
+                                    <div class="monitor small"><div class="monitor-frame"></div></div><div class="keyboard small"></div>
+                                    <div class="chair"></div>
+                                </div>
+
+                                <div class="visitor">
+                                    <div class="visitor-head"></div><div class="visitor-body"></div><div class="visitor-badge">?</div>
+                                    <div class="visitor-arm"></div><div class="visitor-leg one"></div><div class="visitor-leg two"></div>
+                                    <div class="visitor-label">LÁTOGATÓ</div>
+                                    <button class="office-hit hit-visitor" data-id="unattended-visitor" aria-label="Kíséret nélküli idegen látogató"></button>
+                                </div>
+
+                                <div class="office-door"><div class="door-frame"></div><div class="door-panel"><span>STAFF ONLY</span></div><div class="door-handle"></div></div>
+                                <div class="scene-floor-label">CYBERSHIELD // INFORMATION SECURITY TRAINING FACILITY</div>
+                            </div>
+
+                            <div class="scene-vignette"></div>
+                            <div class="scene-reticle"></div>
+                            <div class="scene-location">SECURE OFFICE / SECTOR 04 <span>● LIVE</span></div>
+                        </div>
+                    </div>
+
+                    <aside class="office-side-panel">
+                        <div class="office-panel-title"><span>◈</span> ELLENŐRZÉSI PROTOKOLL</div>
+                        <div class="audit-instruction">
+                            <b>FELADAT</b>
+                            <p>Keresse meg a környezetben elhelyezett 15 biztonsági hibát. Kattintson közvetlenül a gyanús objektumokra.</p>
+                        </div>
+                        <div id="office-error-description" class="office-description">
+                            <div class="description-empty">
+                                <span>⌖</span><b>VIZSGÁLAT INDÍTÁSRA KÉSZ</b>
+                                <p>Fizikai hozzáférés, információszivárgás, eszközbiztonság és emberi tényezők egyaránt vizsgálhatók.</p>
+                            </div>
+                        </div>
+                        <div class="office-findings">
+                            <div><span>FELTÁRT HIBÁK</span><strong id="office-found-mini">0 / 15</strong></div>
+                            <div class="office-mini-progress"><i id="office-mini-progress"></i></div>
+                        </div>
+                        <div class="office-side-note"><span>TIP</span><p>A részletekhez figyelje a képernyőket, papírokat, fizikai hozzáférési pontokat és a látogatók kezelését is.</p></div>
+                        <button onclick="Navigation.showScreen('screen-map')" class="office-back-btn">← VISSZA A CYBERSHIELDHEZ</button>
+                        <button onclick="Quiz.resetOfficeErrorFinder()" class="office-reset-btn">↻ ELLENŐRZÉS ÚJRAINDÍTÁSA</button>
+                    </aside>
+                </div>
+
+                <div id="office-completion" class="office-completion hidden">
+                    <div class="completion-card">
+                        <div class="completion-icon">✓</div>
+                        <div class="completion-kicker">ELLENŐRZÉS BEFEJEZVE</div>
+                        <h3>15 / 15 biztonsági hiba azonosítva</h3>
+                        <p>A teljes irodaellenőrzés sikeresen lezárult.</p>
+                        <div class="completion-stats">
+                            <div><span>ELTELT IDŐ</span><b id="office-final-time">00:00</b></div>
+                            <div><span>HIBÁS KATTINTÁS</span><b id="office-final-misses">0</b></div>
+                            <div><span>PONTSZÁM</span><b id="office-final-score">1500</b></div>
+                        </div>
+                        <div class="completion-actions">
+                            <button onclick="Quiz.resetOfficeErrorFinder()" class="office-reset-btn">↻ ÚJRAINDÍTÁS</button>
+                            <button onclick="Navigation.showScreen('screen-map')" class="office-primary-btn">VISSZA A CYBERSHIELDHEZ →</button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <aside class="office-side-panel">
-                <div class="audit-instruction">
-                    <span class="mini-icon">⌖</span>
-                    <div><b>KERESÉSI MÓD</b><p>Kattintson közvetlenül a gyanús tárgyra. A megtalált hibák zöld jelölést kapnak.</p></div>
-                </div>
-                <div id="office-error-description" class="office-description">
-                    <div class="description-empty">
-                        <span>◉</span>
-                        <b>VIZSGÁLAT INDÍTÁSRA KÉSZ</b>
-                        <p>Keresse meg az iroda fizikai és információbiztonsági hiányosságait.</p>
-                    </div>
-                </div>
-                <div class="office-legend">
-                    <div><span class="legend-dot idle"></span> Fel nem fedezett</div>
-                    <div><span class="legend-dot found"></span> Felfedezve</div>
-                    <div><span class="legend-dot hot"></span> Gyanús objektum</div>
-                </div>
-                <button onclick="Quiz.resetOfficeErrorFinder()" class="office-reset-btn">↻ AUDIT ÚJRAINDÍTÁSA</button>
-            </aside>
-        </div>
-    </div>
-</section>
+        </section>
 
         <!-- ============================================== -->
         <!-- SCREEN 7: ESCAPE ROOM / KISZABADULÓS SZOBA -->
