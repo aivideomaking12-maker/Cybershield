@@ -34,6 +34,14 @@ window.Navigation = (function() {
             return;
         }
 
+        // Stop the office audit render/event lifecycle when leaving its screen.
+        const activeOfficeScreen = document.getElementById('screen-office-errors');
+        if (activeOfficeScreen && !activeOfficeScreen.classList.contains('hidden') && screenId !== 'screen-office-errors') {
+            if (window.Quiz && typeof window.Quiz.destroyOfficeErrorFinder === 'function') {
+                window.Quiz.destroyOfficeErrorFinder();
+            }
+        }
+
         // Az oktatói felület csak admin szerepkörrel érhető el.
         if (screenId === 'screen-teacher') {
             const state = window.Progress.getState();
