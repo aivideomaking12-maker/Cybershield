@@ -9,10 +9,11 @@ window.Progress = (function() {
 
     // Default structure for a clean state
     const defaultState = {
-        user: null, // { name, rank, unit, role: 'user'|'admin', xp, badge, path }
+        user: null, // { id, name, rank, unit, role: 'user'|'admin', xp, badge, path }
         diagnosticScore: null, // { score, percentage, path, pathDesc }
         completedModules: {}, // { "1": { xp: 100, score: 5, total: 5, date: "2026..." }, ... }
         officeErrors: [], // ["open-window", "board-pass", ...]
+        officeAuditStats: { elapsedSeconds: null, wrongClicks: 0, score: null, completedAt: null },
         escaperoomLocks: [false, false, false, false, false, false, false, false], // 8 locks
         escaperoomActiveRiddle: 0,
         weaknesses: [] // ["Q3", "Q7"] questions they missed in quizzes
@@ -31,6 +32,7 @@ window.Progress = (function() {
                 // Ensure backward compatibility or structure safety
                 if (!state.completedModules) state.completedModules = {};
                 if (!state.officeErrors) state.officeErrors = [];
+                if (!state.officeAuditStats) state.officeAuditStats = { elapsedSeconds: null, wrongClicks: 0, score: null, completedAt: null };
                 if (!state.escaperoomLocks) state.escaperoomLocks = Array(8).fill(false);
                 if (!state.weaknesses) state.weaknesses = [];
             } else {
@@ -80,6 +82,15 @@ window.Progress = (function() {
             };
             state.diagnosticScore = profile.diagnostic_score || null;
             state.officeErrors = Array.isArray(profile.office_errors) ? profile.office_errors : [];
+            const auditStatsKey = `cybershield_office_audit_${userId}`;
+            try {
+                const savedAuditStats = localStorage.getItem(auditStatsKey);
+                state.officeAuditStats = savedAuditStats
+                    ? JSON.parse(savedAuditStats)
+                    : { elapsedSeconds: null, wrongClicks: 0, score: null, completedAt: null };
+            } catch (_) {
+                state.officeAuditStats = { elapsedSeconds: null, wrongClicks: 0, score: null, completedAt: null };
+            }
             state.escaperoomLocks = Array.isArray(profile.escaperoom_locks) ? profile.escaperoom_locks : Array(8).fill(false);
             state.weaknesses = Array.isArray(profile.weaknesses) ? profile.weaknesses : [];
 
@@ -175,6 +186,7 @@ window.Progress = (function() {
 
     function setUser(userData) {
         state.user = {
+            id: userData.id || null,
             name: userData.name || '',
             rank: userData.rank || '',
             unit: userData.unit || '',
@@ -281,6 +293,25 @@ window.Progress = (function() {
         return false;
     }
 
+    function setOfficeAuditStats(stats) {
+        state.officeAuditStats = {
+            elapsedSeconds: Number(stats?.elapsedSeconds) || 0,
+            wrongClicks: Number(stats?.wrongClicks) || 0,
+            score: Number(stats?.score) || 0,
+            completedAt: stats?.completedAt || new Date().toISOString()
+        };
+        try {
+            const userId = window.SupabaseConnection?.isConfigured?.()
+                ? null
+                : null;
+            const key = state.user?.id ? `cybershield_office_audit_${state.user.id}` : 'cybershield_office_audit_offline';
+            localStorage.setItem(key, JSON.stringify(state.officeAuditStats));
+        } catch (e) {
+            console.warn('Iroda audit statisztika mentése nem sikerült:', e);
+        }
+        save();
+    }
+
     function setEscaperoomLock(index, status) {
         if (index >= 0 && index < 8) {
             state.escaperoomLocks[index] = status;
@@ -306,6 +337,7 @@ window.Progress = (function() {
         reset: reset,
         getState: getState,
         setUser: setUser,
+        setOfficeAuditStats: setOfficeAuditStats,
         addXP: addXP,
         completeModule: completeModule,
         isModuleCompleted: isModuleCompleted,
