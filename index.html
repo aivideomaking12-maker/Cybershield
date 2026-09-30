@@ -596,8 +596,28 @@
         <!-- SCREEN 6: INFORMATION SECURITY OFFICE AUDIT -->
         <!-- ============================================== -->
         <section id="screen-office-errors" class="hidden fixed inset-0 z-[60] bg-slate-950 overflow-hidden" aria-label="3D információbiztonsági audit">
-    <div id="office-3d-root" class="w-full h-full"></div>
-</section>
+            <div class="absolute inset-x-0 top-0 z-[80] h-16 border-b border-slate-900 bg-slate-950/95 backdrop-blur flex items-center justify-between px-4 sm:px-6">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="flex items-center space-x-3 cursor-pointer" onclick="Navigation.goToHome()" role="link" aria-label="Vissza a központba">
+                        <svg class="w-8 h-8 text-cyan-500 filter drop-shadow-[0_0_8px_rgba(6,182,212,0.4)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <div>
+                            <span class="font-bold tracking-wider text-lg bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">CYBER<span class="text-cyan-400">SHIELD</span></span>
+                            <span class="hidden sm:block text-[10px] text-slate-500 uppercase tracking-[0.2em] font-semibold">Információbiztonsági ellenőrzés</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" onclick="Navigation.goToHome()" class="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-800 bg-slate-900/80 text-slate-300 hover:text-cyan-300 hover:border-cyan-500/40 transition-all text-xs font-semibold" aria-label="Vissza a központba">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                    Vissza a központba
+                </button>
+            </div>
+            <div id="office-3d-root" class="absolute inset-x-0 bottom-0 top-16 overflow-hidden" aria-label="3D iroda audit"></div>
+        </section>
 
         <!-- ============================================== -->
         <!-- SCREEN 7: ESCAPE ROOM / KISZABADULÓS SZOBA -->
