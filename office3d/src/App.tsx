@@ -8,13 +8,18 @@ import { OfficeScene } from './components/OfficeScene';
 import { CompletionModal } from './components/CompletionModal';
 import { HelpModal } from './components/HelpModal';
 
+interface AppProps {
+  onErrorFound?: (errorId: string) => void;
+  onCompleted?: (stats: GameStats) => void;
+}
+
 interface MissRipple {
   id: number;
   x: number;
   y: number;
 }
 
-export default function App() {
+export default function App({ onErrorFound, onCompleted }: AppProps) {
   const [errors, setErrors] = useState<SecurityError[]>(() =>
     INITIAL_OFFICE_ERRORS.map((e) => ({ ...e, discovered: false }))
   );
@@ -36,28 +41,25 @@ export default function App() {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [resetCounter, setResetCounter] = useState<number>(0);
 
-  // Integráció a CyberShield szülőalkalmazással: a legacy audit képernyő
-  // ezen az üzenetcsatornán adja át a korábban megtalált hibákat, és ugyanitt
-  // jelezzük vissza a teljes audit eredményét.
+  // A 3D audit ugyanabban az oldalon fut, ezért a legacy CyberShield
+  // eseményrendszerén keresztül szinkronizáljuk a már megtalált hibákat.
   useEffect(() => {
-    const handleParentMessage = (event: MessageEvent) => {
-      if (event.source !== window.parent) return;
-      if (!event.data || event.data.type !== 'CYBERSHIELD_OFFICE_AUDIT_INIT') return;
-
-      const foundIds = new Set<string>(Array.isArray(event.data.foundIds) ? event.data.foundIds : []);
+    const handleInit = (event: Event) => {
+      const detail = (event as CustomEvent<{ foundIds?: string[]; auditStats?: { elapsedSeconds?: number | null; wrongClicks?: number; score?: number | null } | null }>).detail || {};
+      const foundIds = new Set<string>(Array.isArray(detail.foundIds) ? detail.foundIds : []);
       setErrors((prev) => prev.map((error) => ({ ...error, discovered: foundIds.has(error.id) })));
       setStats((prev) => ({
         ...prev,
         foundCount: Math.min(foundIds.size, prev.totalErrors),
+        elapsedSeconds: Number(detail.auditStats?.elapsedSeconds || 0),
+        timeRemaining: Math.max(0, 300 - Number(detail.auditStats?.elapsedSeconds || 0)),
+        mistakes: Number(detail.auditStats?.wrongClicks || 0),
+        score: Number(detail.auditStats?.score || 0),
       }));
       if (foundIds.size >= 15) setStatus('COMPLETED');
     };
-
-    window.addEventListener('message', handleParentMessage);
-    if (window.parent !== window) {
-      window.parent.postMessage({ type: 'CYBERSHIELD_OFFICE_AUDIT_READY' }, '*');
-    }
-    return () => window.removeEventListener('message', handleParentMessage);
+    window.addEventListener('cybershield:office-init', handleInit);
+    return () => window.removeEventListener('cybershield:office-init', handleInit);
   }, []);
 
   // Miss-click visual ripple coordinates
@@ -90,23 +92,16 @@ export default function App() {
     return () => clearInterval(timer);
   }, [status]);
 
-  // Küldjük vissza az eredményt csak akkor, amikor a React állapot ténylegesen
-  // COMPLETED állapotba került; így StrictMode mellett sem duplázódik az esemény.
+  // A teljesítés közvetlenül visszakerül a CyberShield progress rendszerébe.
   useEffect(() => {
-    if (status !== 'COMPLETED' || window.parent === window) return;
-    window.parent.postMessage({
-      type: 'CYBERSHIELD_OFFICE_AUDIT_COMPLETED',
-      stats: {
-        elapsedSeconds: stats.elapsedSeconds,
-        wrongClicks: stats.mistakes,
-        score: stats.score,
-      },
-    }, '*');
+    if (status !== 'COMPLETED') return;
+    onCompleted?.(stats);
   }, [status]);
 
   // Handler: Player discovered a valid error
   const handleFoundError = useCallback((targetError: SecurityError) => {
     sound.playSuccess();
+    onErrorFound?.(targetError.id);
 
     setErrors((prev) =>
       prev.map((e) => (e.id === targetError.id ? { ...e, discovered: true } : e))
