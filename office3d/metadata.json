@@ -1,0 +1,6 @@
+{
+  "name": "Információbiztonsági Ellenőrzés",
+  "description": "Professzionális, interaktív információbiztonsági és fizikai biztonsági oktatójáték. Találd meg mind a 15 biztonsági rést a rendőrségi irodában!",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
