@@ -189,8 +189,8 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
     scene.add(floorMesh);
 
     // BACK WALL (Z = -5)
-    const wallMat = new THREE.MeshBasicMaterial({
-  color: 0xd1d5db,
+const wallMat = new THREE.MeshBasicMaterial({
+  color: 0xb8bec6,
   side: THREE.DoubleSide
 });
     const backWallGeo = new THREE.PlaneGeometry(roomWidth, roomHeight);
