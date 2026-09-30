@@ -189,7 +189,10 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
     scene.add(floorMesh);
 
     // BACK WALL (Z = -5)
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.85 });
+    const wallMat = new THREE.MeshStandardMaterial({
+  color: 0xcbd5e1,
+  roughness: 0.85
+});
     const backWallGeo = new THREE.PlaneGeometry(roomWidth, roomHeight);
     const backWall = new THREE.Mesh(backWallGeo, wallMat);
     backWall.position.set(0, roomHeight / 2, -roomDepth / 2);
@@ -229,7 +232,7 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
       roughness: 0.4,
     });
     const crestMesh = new THREE.Mesh(crestGeo, crestMat);
-    crestMesh.position.set(-0.6, 3.65, -roomDepth / 2 + 0.02);
+    crestMesh.position.set(0.0, 3.65, -roomDepth / 2 + 0.02);
     scene.add(crestMesh);
 
     // DOOR ON RIGHT WALL
