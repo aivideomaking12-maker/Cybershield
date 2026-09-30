@@ -8,18 +8,13 @@ import { OfficeScene } from './components/OfficeScene';
 import { CompletionModal } from './components/CompletionModal';
 import { HelpModal } from './components/HelpModal';
 
-interface AppProps {
-  onErrorFound?: (errorId: string) => void;
-  onCompleted?: (stats: GameStats) => void;
-}
-
 interface MissRipple {
   id: number;
   x: number;
   y: number;
 }
 
-export default function App({ onErrorFound, onCompleted }: AppProps) {
+export default function App() {
   const [errors, setErrors] = useState<SecurityError[]>(() =>
     INITIAL_OFFICE_ERRORS.map((e) => ({ ...e, discovered: false }))
   );
@@ -33,7 +28,8 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
     timeRemaining: 300, // 05:00 minutes
   });
 
-  const [status, setStatus] = useState<GameStatus>('PLAYING');
+  // Az audit képernyő megnyitásáig a játék szünetel, így a timer nem fogy a dashboardon.
+  const [status, setStatus] = useState<GameStatus>('PAUSED');
   const [selectedErrorId, setSelectedErrorId] = useState<string | null>(null);
   const [focusedErrorId, setFocusedErrorId] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -41,25 +37,42 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [resetCounter, setResetCounter] = useState<number>(0);
 
-  // A 3D audit ugyanabban az oldalon fut, ezért a legacy CyberShield
-  // eseményrendszerén keresztül szinkronizáljuk a már megtalált hibákat.
+  // Integráció a CyberShield főalkalmazással: ugyanabban a dokumentumban
+  // futunk, ezért CustomEventeket használunk az audit/progress szinkronizálására.
   useEffect(() => {
     const handleInit = (event: Event) => {
-      const detail = (event as CustomEvent<{ foundIds?: string[]; auditStats?: { elapsedSeconds?: number | null; wrongClicks?: number; score?: number | null } | null }>).detail || {};
+      const detail = (event as CustomEvent).detail || {};
       const foundIds = new Set<string>(Array.isArray(detail.foundIds) ? detail.foundIds : []);
       setErrors((prev) => prev.map((error) => ({ ...error, discovered: foundIds.has(error.id) })));
       setStats((prev) => ({
         ...prev,
         foundCount: Math.min(foundIds.size, prev.totalErrors),
-        elapsedSeconds: Number(detail.auditStats?.elapsedSeconds || 0),
-        timeRemaining: Math.max(0, 300 - Number(detail.auditStats?.elapsedSeconds || 0)),
-        mistakes: Number(detail.auditStats?.wrongClicks || 0),
-        score: Number(detail.auditStats?.score || 0),
+        timeRemaining: Number.isFinite(detail.timeRemaining) ? Math.max(0, Number(detail.timeRemaining)) : prev.timeRemaining,
+        mistakes: Number.isFinite(detail.misses) ? Math.max(0, Number(detail.misses)) : prev.mistakes,
       }));
       if (foundIds.size >= 15) setStatus('COMPLETED');
+      else setStatus('PLAYING');
     };
+
+    const handleStop = () => setStatus('PAUSED');
+
+    const handleReset = () => {
+      setErrors(INITIAL_OFFICE_ERRORS.map((e) => ({ ...e, discovered: false })));
+      setStats({ foundCount: 0, totalErrors: 15, mistakes: 0, elapsedSeconds: 0, score: 0, timeRemaining: 300 });
+      setSelectedErrorId(null);
+      setFocusedErrorId(null);
+      setStatus('PLAYING');
+      setResetCounter((prev) => prev + 1);
+    };
+
     window.addEventListener('cybershield:office-init', handleInit);
-    return () => window.removeEventListener('cybershield:office-init', handleInit);
+    window.addEventListener('cybershield:office-reset', handleReset);
+    window.addEventListener('cybershield:office-stop', handleStop);
+    return () => {
+      window.removeEventListener('cybershield:office-init', handleInit);
+      window.removeEventListener('cybershield:office-reset', handleReset);
+      window.removeEventListener('cybershield:office-stop', handleStop);
+    };
   }, []);
 
   // Miss-click visual ripple coordinates
@@ -92,22 +105,32 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
     return () => clearInterval(timer);
   }, [status]);
 
-  // A teljesítés közvetlenül visszakerül a CyberShield progress rendszerébe.
+  // A teljesítés eredményét a fő CyberShield alkalmazásnak adjuk át.
   useEffect(() => {
     if (status !== 'COMPLETED') return;
-    onCompleted?.(stats);
-  }, [status]);
+    window.dispatchEvent(new CustomEvent('cybershield:office-completed', {
+      detail: {
+        stats: {
+          elapsedSeconds: stats.elapsedSeconds,
+          wrongClicks: stats.mistakes,
+          score: stats.score,
+        },
+      },
+    }));
+  }, [status, stats.elapsedSeconds, stats.mistakes, stats.score]);
 
   // Handler: Player discovered a valid error
   const handleFoundError = useCallback((targetError: SecurityError) => {
     sound.playSuccess();
-    onErrorFound?.(targetError.id);
 
     setErrors((prev) =>
       prev.map((e) => (e.id === targetError.id ? { ...e, discovered: true } : e))
     );
 
     setSelectedErrorId(targetError.id);
+    window.dispatchEvent(new CustomEvent('cybershield:office-error-found', {
+      detail: { id: targetError.id },
+    }));
 
     setStats((prev) => {
       const nextFound = prev.foundCount + 1;
@@ -132,6 +155,7 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
   // Handler: Player clicked empty/safe area in office (Mistake)
   const handleMissClick = useCallback((x: number, y: number) => {
     sound.playError();
+    window.dispatchEvent(new CustomEvent('cybershield:office-miss'));
 
     // Spawn red ripple effect
     const newRippleId = ++rippleCounter.current;
@@ -164,6 +188,7 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
 
   // Reset Game
   const handleReset = () => {
+    window.dispatchEvent(new CustomEvent('cybershield:office-reset'));
     setErrors(INITIAL_OFFICE_ERRORS.map((e) => ({ ...e, discovered: false })));
     setStats({
       foundCount: 0,
@@ -181,7 +206,7 @@ export default function App({ onErrorFound, onCompleted }: AppProps) {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden font-['Plus_Jakarta_Sans']">
+    <div className="relative w-screen h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden font-sans">
       {/* Top HUD */}
       <HUD
         stats={stats}
