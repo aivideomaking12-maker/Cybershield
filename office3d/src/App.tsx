@@ -206,7 +206,7 @@ export default function App() {
   };
 
   return (
-    <div className="relative w-screen h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden font-sans">
+    <div className="relative w-full h-full min-h-0 bg-slate-950 text-slate-100 flex flex-col overflow-hidden font-sans">
       {/* Top HUD */}
       <HUD
         stats={stats}
@@ -217,7 +217,7 @@ export default function App() {
       />
 
       {/* Main Game Surface */}
-      <div className="relative flex-1 w-full h-[calc(100vh-53px)] overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full overflow-hidden">
         {/* Three.js 3D Scene */}
         <OfficeScene
           errors={errors}
