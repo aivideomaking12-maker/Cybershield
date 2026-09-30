@@ -339,7 +339,7 @@
                     </div>
 
                     <!-- Office Error Finder (Extra Task) Quick Access -->
-                    <div class="bg-gradient-to-br from-purple-950/20 to-slate-950 border border-purple-900/30 p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:border-purple-500/40 transition-all" onclick="event.preventDefault(); event.stopPropagation(); Navigation.showScreen('screen-office-errors'); return false;" role="button" aria-label="Irodai hiba kereső gyakorlati audit">
+                    <div class="bg-gradient-to-br from-purple-950/20 to-slate-950 border border-purple-900/30 p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:border-purple-500/40 transition-all" onclick="Navigation.showScreen('screen-office-errors')" role="button" aria-label="Irodai hiba kereső gyakorlati audit">
                         <div class="space-y-1">
                             <span class="text-[9px] font-bold text-purple-400 uppercase tracking-wider font-mono">Gyakorlati audit</span>
                             <h4 class="text-xs font-extrabold text-slate-200 group-hover:text-purple-400 transition-colors">Irodai Hiba-Kereső</h4>
@@ -596,14 +596,7 @@
         <!-- SCREEN 6: INFORMATION SECURITY OFFICE AUDIT -->
         <!-- ============================================== -->
         <section id="screen-office-errors" class="hidden fixed inset-0 z-[60] bg-slate-950 overflow-hidden" aria-label="3D információbiztonsági audit">
-    <iframe
-        id="office-3d-frame"
-        src="/office3d/"
-        title="3D információbiztonsági ellenőrzés"
-        class="block w-full h-full border-0"
-        allow="autoplay"
-        loading="eager"
-    ></iframe>
+    <div id="office-3d-root" class="w-full h-full"></div>
 </section>
 
         <!-- ============================================== -->
