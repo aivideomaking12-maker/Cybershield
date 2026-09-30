@@ -51,7 +51,7 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             </span>
           </div>
 
-          <h2 className="text-base font-bold text-white font-['Space_Grotesk'] tracking-tight">
+          <h2 className="text-base font-bold text-white font-sans tracking-tight">
             Információbiztonsági Ellenőrzés
           </h2>
           <p className="text-xs text-slate-400 mt-1 leading-relaxed">
