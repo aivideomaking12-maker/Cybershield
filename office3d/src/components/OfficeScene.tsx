@@ -84,8 +84,8 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
   useEffect(() => {
     if (!mountRef.current) return;
     const container = mountRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    const width = Math.max(container.clientWidth, 1);
+    const height = Math.max(container.clientHeight, 1);
 
     // SCENE
     const scene = new THREE.Scene();
@@ -1058,9 +1058,12 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
     };
 
     window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    resizeObserver.observe(container);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
       controls.dispose();
       renderer.dispose();
