@@ -7,8 +7,8 @@ export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
   build: {
-    outDir: path.resolve(__dirname, '../public/office3d'),
-    emptyOutDir: true,
+    outDir: path.resolve(__dirname, '../dist/office3d'),
+    emptyOutDir: false,
   },
   resolve: {
     alias: {
