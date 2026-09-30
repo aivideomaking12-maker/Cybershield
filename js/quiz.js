@@ -884,7 +884,7 @@ window.Quiz= (function() {
     let officeAuditRemaining = OFFICE_AUDIT_DURATION;
     let officeAuditMisses = 0;
     let officeAuditCompleted = false;
-    let office3dMessageBound = false;
+    let officeAuditScoreOverride = null;
 
     function getOfficeErrorDefinition(errorId) {
         const info = window.QuizData.officeErrors[errorId];
@@ -943,97 +943,35 @@ window.Quiz= (function() {
     function initOfficeErrorFinder() {
         stopOfficeAuditTimer();
         officeAuditCompleted = false;
-        officeAuditMisses = 0;
+        officeAuditScoreOverride = null;
 
-        // A régi 2D-s minijáték helyett a React/Three.js 3D auditmodul fut.
-        // A modul iframe-ben izoláltan fut, de az eredményt visszaadja a
-        // CyberShield progress/XP rendszerének.
-        const office3dFrame = document.getElementById('office-3d-frame');
-        if (office3dFrame) {
-            if (!office3dMessageBound) {
-                window.addEventListener('message', (event) => {
-                    if (event.source !== office3dFrame.contentWindow || !event.data) return;
-
-                    if (event.data.type === 'CYBERSHIELD_OFFICE_AUDIT_READY') {
-                        const state = window.Progress.getState();
-                        event.source.postMessage({
-                            type: 'CYBERSHIELD_OFFICE_AUDIT_INIT',
-                            foundIds: Array.isArray(state.officeErrors) ? state.officeErrors : []
-                        }, '*');
-                        return;
-                    }
-
-                    if (event.data.type === 'CYBERSHIELD_OFFICE_AUDIT_COMPLETED') {
-                        const result = event.data.stats || {};
-                        officeAuditRemaining = Math.max(0, OFFICE_AUDIT_DURATION - Number(result.elapsedSeconds || 0));
-                        officeAuditMisses = Math.max(0, Number(result.wrongClicks || 0));
-                        completeOfficeAudit();
-                    }
-                });
-                office3dMessageBound = true;
-            }
-
-            // Fallback azokra az esetekre, amikor a READY üzenet gyorsabban érkezett,
-            // mint ahogy a szülő listener beállt.
-            const sendOffice3dInit = () => {
-                const state = window.Progress.getState();
-                office3dFrame.contentWindow?.postMessage({
-                    type: 'CYBERSHIELD_OFFICE_AUDIT_INIT',
-                    foundIds: Array.isArray(state.officeErrors) ? state.officeErrors : []
-                }, '*');
-            };
-            office3dFrame.addEventListener('load', sendOffice3dInit, { once: true });
-            sendOffice3dInit();
-            return;
-        }
-
+        // A 3D audit már ugyanabban a React/Vite alkalmazásban fut, nem iframe-ben.
+        // Ez megszünteti a Vercel SPA fallback és a külön session-környezet problémáit.
         const state = window.Progress.getState();
-        const foundErrors = state.officeErrors || [];
-        const scene = document.getElementById('office-interactive-scene');
-        const triggers = document.querySelectorAll('#office-interactive-scene .office-hit');
-
-        triggers.forEach(trigger => {
-            const errorId = trigger.getAttribute('data-id');
-            trigger.classList.toggle('found', foundErrors.includes(errorId));
-            trigger.onclick = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                selectOfficeError(errorId);
-            };
-        });
-
-        if (scene) {
-            scene.onclick = (e) => {
-                if (e.target.closest('.office-hit')) return;
-                officeAuditMisses += 1;
-                renderOfficeAuditTimer();
-                scene.classList.remove('office-miss-flash');
-                void scene.offsetWidth;
-                scene.classList.add('office-miss-flash');
-
-                const descBox = document.getElementById('office-error-description');
-                if (descBox) {
-                    descBox.innerHTML = `
-                        <div class="office-miss-message">
-                            <span>!</span>
-                            <b>NEM TALÁLT BIZTONSÁGI HIBÁT</b>
-                            <p>Ezen a ponton nincs azonosítható audit-találat. Vizsgálja meg a környezet más részét.</p>
-                        </div>
-                    `;
-                }
-            };
+        if (window.Office3D && typeof window.Office3D.init === 'function') {
+            window.Office3D.init(Array.isArray(state.officeErrors) ? state.officeErrors : []);
         }
+    }
 
-        const completion = document.getElementById('office-completion');
-        if (completion) completion.classList.add('hidden');
+    function recordOffice3DError(errorId) {
+        const errorInfo = getOfficeErrorDefinition(errorId);
+        if (!errorInfo) return;
 
-        updateOfficeCounter();
-        const currentCount = (window.Progress.getState().officeErrors || []).length;
-        if (currentCount < OFFICE_AUDIT_TOTAL) {
-            startOfficeAuditTimer();
-        } else {
-            completeOfficeAudit();
+        const isNew = window.Progress.addOfficeError(errorId);
+        if (isNew) {
+            window.Gamification.showToast(
+                "Biztonsági rés megtalálva!",
+                `+20 XP: ${errorInfo.title}`,
+                'xp'
+            );
         }
+    }
+
+    async function completeOfficeAuditFrom3D(stats = {}) {
+        officeAuditRemaining = Math.max(0, OFFICE_AUDIT_DURATION - Number(stats.elapsedSeconds || 0));
+        officeAuditMisses = Math.max(0, Number(stats.wrongClicks || 0));
+        officeAuditScoreOverride = Number.isFinite(Number(stats.score)) ? Number(stats.score) : null;
+        await completeOfficeAudit();
     }
 
     function selectOfficeError(errorId) {
@@ -1087,7 +1025,9 @@ window.Quiz= (function() {
         stopOfficeAuditTimer();
 
         const elapsed = OFFICE_AUDIT_DURATION - officeAuditRemaining;
-        const score = Math.max(0, 1500 - (officeAuditMisses * 25));
+        const score = officeAuditScoreOverride !== null
+            ? officeAuditScoreOverride
+            : Math.max(0, 1500 - (officeAuditMisses * 25));
 
         const finalTime = document.getElementById('office-final-time');
         const finalMisses = document.getElementById('office-final-misses');
@@ -1192,9 +1132,6 @@ window.Quiz= (function() {
 
     function destroyOfficeErrorFinder() {
         stopOfficeAuditTimer();
-        const scene = document.getElementById('office-interactive-scene');
-        if (scene) scene.onclick = null;
-        document.querySelectorAll('#office-interactive-scene .office-hit').forEach(el => el.onclick = null);
     }
 
     // ==============================================
