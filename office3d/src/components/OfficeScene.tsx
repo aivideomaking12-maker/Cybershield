@@ -1313,7 +1313,7 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
       ))}
 
       {/* Camera View Presets Bar (bottom-left) */}
-      <div className="absolute bottom-5 left-5 z-20 flex flex-wrap items-center gap-1.5 p-1.5 rounded-xl bg-slate-900/85 border border-slate-800 backdrop-blur-md shadow-2xl">
+      <div className="office-camera-presets fixed bottom-4 left-4 z-[120] flex flex-wrap items-center gap-1.5 p-1.5 rounded-xl bg-slate-900/95 border border-slate-700/90 backdrop-blur-md shadow-2xl pointer-events-auto">
         <span className="text-[11px] font-semibold tracking-wider text-slate-400 uppercase px-2">
           Kamera:
         </span>
@@ -1350,7 +1350,7 @@ export const OfficeScene: React.FC<OfficeSceneProps> = ({
       </div>
 
       {/* Quick Nav/Controls Guide (bottom-center) */}
-      <div className="hidden md:flex items-center gap-3 absolute bottom-5 left-1/2 -translate-x-1/2 z-10 px-3 py-1.5 rounded-lg bg-slate-950/70 border border-slate-800/80 text-[11px] text-slate-400 backdrop-blur-sm pointer-events-none">
+      <div className="hidden md:flex items-center gap-3 fixed bottom-4 left-1/2 -translate-x-1/2 z-[110] px-3 py-1.5 rounded-lg bg-slate-950/80 border border-slate-800/80 text-[11px] text-slate-400 backdrop-blur-sm pointer-events-none">
         <span>Bal egérgomb: Keresés / Forgatás</span>
         <span aria-hidden="true">·</span>
         <span>Jobb egérgomb: Mozgatás</span>
