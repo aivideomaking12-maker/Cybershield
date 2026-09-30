@@ -110,7 +110,7 @@ export function createWhiteboardTexture(): THREE.CanvasTexture {
   ctx.font = 'bold 16px "JetBrains Mono", monospace';
   ctx.fillText('KÖZPONT BELÉPÉSI KÓDOK:', 65, 275);
   ctx.font = '15px "JetBrains Mono", monospace';
-  ctx.fillText('ROBOTZSÁKU KÓD: 8841-BRFK-SZERVER', 65, 305);
+  ctx.fillText('ROBOTZSARU KÓD: 8841-BRFK-SZERVER', 65, 305);
   ctx.fillText('RAKTÁR AJTÓ PIN: 3914#', 65, 330);
 
   // Investigation timeline & connections diagram on right
