@@ -47,3 +47,12 @@ html, body, #root {
   min-height: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* CyberShield integration: keep audit controls visible above the WebGL canvas. */
+#office-3d-root .office-camera-presets {
+  z-index: 120 !important;
+}
+#screen-office-errors,
+#screen-office-errors * {
+  font-family: Arial, Helvetica, sans-serif;
+}
