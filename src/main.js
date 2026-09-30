@@ -8,24 +8,14 @@ import '../js/gamification.js';
 import '../js/quiz.js';
 import '../js/navigation.js';
 import '../js/app.js';
+
+// Native React/Three.js office audit (no iframe / no second document).
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import Office3DApp from '../office3d/src/App.tsx';
+import OfficeAuditApp from '../office3d/src/App.tsx';
 import '../office3d/src/index.css';
 
-const officeRootElement = document.getElementById('office-3d-root');
-if (officeRootElement) {
-    const officeRoot = createRoot(officeRootElement);
-    officeRoot.render(React.createElement(Office3DApp, {
-        onErrorFound: (errorId) => window.Quiz?.recordOffice3DError?.(errorId),
-        onCompleted: (stats) => window.Quiz?.completeOfficeAuditFrom3D?.(stats),
-    }));
-
-    window.Office3D = {
-        init(foundIds = []) {
-            window.dispatchEvent(new CustomEvent('cybershield:office-init', {
-                detail: { foundIds, auditStats: window.Progress?.getState?.().officeAuditStats || null }
-            }));
-        }
-    };
+const officeRoot = document.getElementById('office-3d-root');
+if (officeRoot) {
+    createRoot(officeRoot).render(React.createElement(OfficeAuditApp));
 }
