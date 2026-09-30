@@ -8,7 +8,7 @@
   body {
     user-select: none;
     -webkit-user-select: none;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   /* Custom sleek scrollbar for panels */
@@ -29,4 +29,21 @@
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(100, 116, 139, 1);
   }
+}
+
+
+/* The 3D audit lives inside the CyberShield screen, so it must fill
+   the available area rather than a full viewport that overflows the
+   parent header. */
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#office-3d-root {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }
