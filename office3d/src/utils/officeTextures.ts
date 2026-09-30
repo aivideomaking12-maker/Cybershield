@@ -369,48 +369,39 @@ export function createMonitorPostitTexture(): THREE.CanvasTexture {
 }
 
 export function createPoliceCrestTexture(): THREE.CanvasTexture {
+  // SMRFK logo supplied for the office wall. The texture is loaded asynchronously
+  // so the existing synchronous Three.js scene setup does not need to change.
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
+  canvas.width = 512;
+  canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
-
-  // Circular Hungarian Police Shield insignia
-  ctx.fillStyle = '#0f172a';
-  ctx.fillRect(0, 0, 256, 256);
-
-  ctx.beginPath();
-  ctx.arc(128, 128, 115, 0, Math.PI * 2);
-  ctx.fillStyle = '#1e3a8a';
-  ctx.fill();
-  ctx.strokeStyle = '#eab308';
-  ctx.lineWidth = 8;
-  ctx.stroke();
-
-  // Inner ring
-  ctx.beginPath();
-  ctx.arc(128, 128, 95, 0, Math.PI * 2);
-  ctx.strokeStyle = '#f8fafc';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // Shield
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 16px "Space Grotesk", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('RENDŐRSÉG', 128, 70);
-  ctx.font = 'bold 12px sans-serif';
-  ctx.fillText('POLICE', 128, 90);
-
-  // Sword and scales motif
-  ctx.fillStyle = '#eab308';
-  ctx.fillRect(124, 110, 8, 80);
-  ctx.fillRect(100, 130, 56, 6);
-
-  ctx.font = '11px sans-serif';
-  ctx.fillStyle = '#94a3b8';
-  ctx.fillText('BUDAPEST', 128, 215);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+
+  const image = new Image();
+  image.onload = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Keep the full portrait logo visible without stretching it.
+    const maxHeight = 490;
+    const scale = maxHeight / image.naturalHeight;
+    const width = image.naturalWidth * scale;
+    const x = (canvas.width - width) / 2;
+    const y = (canvas.height - maxHeight) / 2;
+    ctx.drawImage(image, x, y, width, maxHeight);
+
+    texture.needsUpdate = true;
+  };
+  image.onerror = () => {
+    // Keep the wall position visually unobtrusive if the asset fails to load.
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    texture.needsUpdate = true;
+  };
+  image.src = '/smrfk-logo.png';
+
   return texture;
 }
 
