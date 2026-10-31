@@ -355,7 +355,7 @@ window.QuizData = {
     // 4. Module Content and Quizzes Database (5 Modules)
     modules: {
         1: {
-            category: "1. PORTA",
+            category: "1. ELŐTÉR",
             title: "Az Információbiztonság Alapjai",
             xpAward: 100,
             content: `
@@ -383,7 +383,7 @@ window.QuizData = {
                     <div class="space-y-3">
                         <h4 class="text-base font-bold text-white">2. Fizikai Biztonság a Kapitányságon</h4>
                         <p class="text-xs leading-relaxed">
-                            A digitális védelem mit sem ér fizikai védelem nélkül. A kapuügyelet (Porta) az első védelmi vonal. 
+                            A digitális védelem mit sem ér fizikai védelem nélkül. Az előtér az első védelmi vonal. 
                             Minden belépő külső személyt regisztrálni kell, belépőkártyával kell ellátni, és a belső irodákban folyamatos kíséretet kell biztosítani számukra. 
                             <strong>Soha ne hagyjon kíséret nélkül külső személyt a kapitányság védett övezetében!</strong>
                         </p>
