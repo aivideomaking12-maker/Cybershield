@@ -940,3 +940,164 @@ body.office-3d-active > main {
 #screen-office-errors div {
     font-family: inherit;
 }
+
+
+/* =========================================================
+   CYBERSHIELD DASHBOARD — stable three-column command layout
+   ========================================================= */
+#screen-map {
+    width: min(100% - 32px, 1540px) !important;
+    max-width: 1540px !important;
+    margin-inline: auto !important;
+}
+#screen-map .dashboard-layout {
+    display: grid !important;
+    grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) minmax(245px, 285px) !important;
+    gap: 16px !important;
+    align-items: start !important;
+    width: 100%;
+}
+#screen-map .cyber-sidebar,
+#screen-map .cyber-map-shell,
+#screen-map .cyber-map-right-rail {
+    min-width: 0 !important;
+    width: auto !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+}
+#screen-map .cyber-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+#screen-map .cyber-sidebar > .bg-slate-950 {
+    padding: 16px !important;
+}
+#screen-map .cyber-map-shell {
+    padding: 14px !important;
+    margin: 0 !important;
+}
+#screen-map .cyber-map-shell > .relative {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    min-height: 340px;
+}
+#screen-map .cyber-map-shell > .relative > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#screen-map .cyber-map-right-rail {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+#screen-map .cyber-map-right-rail > * {
+    width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+}
+#screen-map .cyber-map-right-rail [role="button"] {
+    min-height: 104px;
+    padding: 16px !important;
+}
+#screen-map .cyber-next-card,
+#screen-map .cyber-map-right-rail > .cyber-card {
+    padding: 16px !important;
+}
+#screen-map > .grid:last-of-type {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr) !important;
+    gap: 16px !important;
+    margin-top: 16px !important;
+}
+#screen-map > .grid:last-of-type > .cyber-card {
+    min-width: 0;
+    min-height: 145px;
+}
+#screen-map .cyber-dashboard-heading {
+    margin-bottom: 20px !important;
+}
+#screen-map .cyber-dashboard-heading h2 {
+    font-size: clamp(1.45rem, 2vw, 2rem) !important;
+    line-height: 1.15 !important;
+}
+
+/* Medium screens: retain clear columns without squeezing the floorplan. */
+@media (min-width: 900px) and (max-width: 1199px) {
+    #screen-map .dashboard-layout {
+        grid-template-columns: 180px minmax(0, 1fr) 235px !important;
+        gap: 12px !important;
+    }
+    #screen-map .cyber-map-shell {
+        padding: 10px !important;
+    }
+    #screen-map .cyber-map-shell > .relative {
+        min-height: 300px;
+    }
+    #screen-map .cyber-sidebar > .bg-slate-950 {
+        padding: 12px !important;
+    }
+    #screen-map > .grid:last-of-type {
+        gap: 12px !important;
+    }
+}
+
+/* Tablet and mobile: stack complete panels in a deliberate reading order. */
+@media (max-width: 899px) {
+    #screen-map {
+        width: min(100% - 24px, 760px) !important;
+    }
+    #screen-map .dashboard-layout {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px !important;
+    }
+    #screen-map .cyber-sidebar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: stretch;
+    }
+    #screen-map .cyber-side-nav {
+        min-width: 0;
+    }
+    #screen-map .cyber-sidebar > .bg-slate-950 {
+        min-width: 0;
+        margin: 0 !important;
+    }
+    #screen-map .cyber-map-shell {
+        grid-row: auto;
+    }
+    #screen-map .cyber-map-shell > .relative {
+        min-height: 0;
+    }
+    #screen-map .cyber-map-right-rail {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+    }
+    #screen-map .cyber-map-right-rail > * {
+        min-width: 0;
+    }
+    #screen-map > .grid:last-of-type {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    #screen-map > .grid:last-of-type > .cyber-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+@media (max-width: 560px) {
+    #screen-map .cyber-sidebar,
+    #screen-map .cyber-map-right-rail,
+    #screen-map > .grid:last-of-type {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+    #screen-map .cyber-dashboard-heading h2 {
+        font-size: 1.35rem !important;
+    }
+    #screen-map .cyber-map-shell {
+        padding: 8px !important;
+    }
+    #screen-map .cyber-map-shell > .relative {
+        aspect-ratio: 1 / 1;
+    }
+}
