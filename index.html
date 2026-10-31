@@ -284,9 +284,9 @@
             </div>
 
             <!-- Interaktív Alaprajz (Interactive Map Canvas/Container) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start">
+            <div class="dashboard-layout items-start">
                 <!-- Map Left: Command-center navigation + module progress -->
-                <div class="lg:col-span-3 xl:col-span-2 space-y-3 cyber-sidebar">
+                <div class="cyber-sidebar">
                     <nav class="cyber-side-nav" aria-label="Kiképzési navigáció">
                         <button class="cyber-side-nav-item active" type="button" onclick="Navigation.showScreen('screen-map')">
                             <span class="cyber-side-nav-icon">⌂</span><span>Kiképző központ</span>
@@ -320,8 +320,8 @@
                     </div>
                 </div>
 
-                <!-- Map Right: Interactive SVG Blueprint Blueprint grid -->
-                <div class="lg:col-span-9 xl:col-span-7 cyber-map-shell bg-slate-950 p-3 sm:p-4 rounded-2xl relative shadow-2xl border border-slate-850">
+                <!-- Map Right: Interactive SVG Blueprint grid -->
+                <div class="cyber-map-shell bg-slate-950 p-3 sm:p-4 rounded-2xl relative shadow-2xl border border-slate-850">
 
                     <!-- Blueprint Wrapper -->
                     <div class="relative w-full overflow-hidden aspect-[4/3] rounded-xl bg-slate-950 border border-slate-900 p-1">
@@ -481,7 +481,7 @@
                     </div>
                 </div>
         <!-- RIGHT DASHBOARD RAIL + BOTTOM INTELLIGENCE -->
-        <div class="cyber-map-right-rail lg:col-span-3 xl:col-span-3 space-y-3" aria-label="Kiképzési állapot">
+        <div class="cyber-map-right-rail space-y-3" aria-label="Kiképzési állapot">
             <!-- Escape Room Quick Access -->
             <div class="bg-gradient-to-br from-red-950/20 to-slate-950 border border-red-900/30 p-4 rounded-xl flex items-center justify-between group cursor-pointer hover:border-red-500/40 transition-all" onclick="Navigation.showScreen('screen-escaperoom')" role="button" aria-label="Kiszabadulós szoba speciális kihívás">
                 <div class="space-y-1">
