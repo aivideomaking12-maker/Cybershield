@@ -325,7 +325,7 @@ window.Navigation = (function() {
             progressPercentageText.textContent = `${(completedCount / 5) * 100}%`;
         }
         if (progressSummaryText) {
-            progressSummaryText.textContent = `${completedCount} / 5 Helyiség Auditálva`;
+            progressSummaryText.textContent = `${completedCount} / 5`;
         }
 
         refreshEnhancedDashboardUI(state, completedCount);
@@ -367,6 +367,30 @@ window.Navigation = (function() {
         if (!nextId) nextId = 5;
         const next = window.QuizData.modules[nextId];
         const nextDetails = completed[nextId];
+
+        // Room-by-room status list inside the expanded course progress panel.
+        modules.forEach(id => {
+            const statusNode = document.getElementById(`room-progress-status-${id}`);
+            if (!statusNode) return;
+            const details = completed[id];
+            if (details) {
+                const isPerfect = details.score === details.total;
+                statusNode.textContent = isPerfect ? 'KIVÁLÓ' : 'TELJESÍTVE';
+                statusNode.dataset.state = isPerfect ? 'perfect' : 'done';
+            } else if (id === nextId) {
+                statusNode.textContent = 'FOLYAMATBAN';
+                statusNode.dataset.state = 'active';
+            } else {
+                statusNode.textContent = 'ZÁRVA';
+                statusNode.dataset.state = 'locked';
+            }
+        });
+
+        const goalTitle = document.getElementById('course-next-goal-title');
+        const goalCopy = document.getElementById('course-next-goal-copy');
+        if (goalTitle && next) goalTitle.textContent = `${next.category} auditjának befejezése`;
+        if (goalCopy && next) goalCopy.textContent = `${next.xpAward || 0} XP szerezhető a helyiség sikeres teljesítésével.`;
+
         const nextTitle = document.getElementById('dashboard-next-title');
         const nextSubtitle = document.getElementById('dashboard-next-subtitle');
         const nextIcon = document.getElementById('dashboard-next-icon');
