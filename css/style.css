@@ -1183,3 +1183,165 @@ body.office-3d-active > main {
         grid-column: auto;
     }
 }
+
+
+/* Expanded course progress panel: useful content fills the extended sidebar. */
+#screen-map .cyber-course-progress {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px 16px !important;
+    border: 1px solid rgba(54,130,190,.28);
+    border-radius: 16px;
+    background:
+        radial-gradient(circle at 50% 18%, rgba(0,190,230,.075), transparent 38%),
+        linear-gradient(155deg, rgba(5,18,35,.98), rgba(2,9,20,.98));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.025), 0 14px 34px rgba(0,0,0,.16);
+}
+.cyber-course-progress-title,
+.cyber-course-room-heading,
+.cyber-course-next-label {
+    color: #7894b1;
+    font: 800 9px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+.cyber-course-progress-overview {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+.cyber-course-progress-ring {
+    position: relative;
+    flex: 0 0 94px;
+    width: 94px;
+    height: 94px;
+}
+.cyber-course-progress-ring svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+.cyber-course-progress-ring circle {
+    fill: none;
+    stroke-width: 7;
+}
+.cyber-course-ring-track {
+    stroke: #14283d;
+}
+.cyber-course-ring-value {
+    stroke: #08c5e8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset .6s ease;
+}
+.cyber-course-progress-ring > span {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #f4faff;
+    font-size: 20px;
+    font-weight: 900;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.cyber-course-progress-summary {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.cyber-course-progress-summary strong {
+    color: #e6f3ff;
+    font-size: 19px;
+    line-height: 1.1;
+    font-weight: 900;
+}
+.cyber-course-progress-summary > span {
+    color: #a9bed3;
+    font-size: 10px;
+    font-weight: 700;
+}
+.cyber-course-progress-summary p {
+    margin: 4px 0 0;
+    color: #7189a4;
+    font-size: 9px;
+    line-height: 1.45;
+}
+.cyber-course-progress-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(76,137,184,.35), transparent);
+}
+.cyber-course-room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.cyber-course-room-heading {
+    margin-bottom: -4px;
+}
+.cyber-course-room-row {
+    display: grid;
+    grid-template-columns: 27px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.cyber-course-room-number {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border: 1px solid rgba(62,117,160,.25);
+    border-radius: 8px;
+    background: rgba(11,34,55,.72);
+    color: #8aa9c7;
+    font: 700 9px ui-monospace, monospace;
+}
+.cyber-course-room-name {
+    overflow: hidden;
+    color: #c8d8e8;
+    font-size: 10px;
+    font-weight: 650;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.cyber-course-room-row strong {
+    color: #71869d;
+    font: 800 8px ui-monospace, monospace;
+    letter-spacing: .035em;
+    white-space: nowrap;
+}
+.cyber-course-room-row strong[data-state="done"] { color: #10b981; }
+.cyber-course-room-row strong[data-state="perfect"] { color: #f4af23; }
+.cyber-course-room-row strong[data-state="active"] { color: #30bced; }
+.cyber-course-next-goal {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: auto;
+    padding: 12px;
+    border: 1px solid rgba(48,188,237,.22);
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(8,53,78,.48), rgba(5,20,37,.7));
+}
+.cyber-course-next-goal strong {
+    color: #e4f3ff;
+    font-size: 10px;
+    line-height: 1.4;
+}
+.cyber-course-next-goal > span {
+    color: #829bb4;
+    font-size: 9px;
+    line-height: 1.4;
+}
+@media (max-width: 899px) {
+    #screen-map .cyber-course-progress {
+        min-height: auto;
+    }
+    #screen-map .cyber-course-next-goal {
+        margin-top: 0;
+    }
+}
