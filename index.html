@@ -302,21 +302,40 @@
                         </button>
                     </nav>
 
-                    <!-- Progress widget with SVG circle diagram -->
-                    <div class="bg-slate-950 p-5 rounded-2xl border border-slate-850 flex flex-col items-center text-center">
-                        <h4 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-4">Teljes Tanfolyam Progress</h4>
-                        
-                        <!-- SVG circle progress -->
-                        <div class="relative w-28 h-28 flex items-center justify-center">
-                            <svg class="w-24 h-24 progress-ring" viewBox="0 0 100 100">
-                                <circle class="text-slate-900" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
-                                <circle id="overall-progress-circle" class="text-cyan-500 progress-ring__circle" stroke-width="8" stroke-dasharray="251.2 251.2" stroke-dashoffset="251.2" stroke-linecap="round" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
-                            </svg>
-                            <span id="overall-progress-percentage" class="absolute text-lg font-black text-white font-mono">0%</span>
+                    <!-- Full course progress and room-by-room status -->
+                    <div class="cyber-course-progress">
+                        <h4 class="cyber-course-progress-title">TELJES TANFOLYAM PROGRESS</h4>
+
+                        <div class="cyber-course-progress-overview">
+                            <div class="cyber-course-progress-ring">
+                                <svg viewBox="0 0 100 100" aria-hidden="true">
+                                    <circle class="cyber-course-ring-track" r="40" cx="50" cy="50"/>
+                                    <circle id="overall-progress-circle" class="cyber-course-ring-value progress-ring__circle" r="40" cx="50" cy="50"/>
+                                </svg>
+                                <span id="overall-progress-percentage">0%</span>
+                            </div>
+                            <div class="cyber-course-progress-summary">
+                                <strong id="overall-progress-summary">0 / 5</strong>
+                                <span>helyiség auditálva</span>
+                                <p>Haladjon végig mind az öt helyiségen a Cyber Guardian jelvény megszerzéséhez.</p>
+                            </div>
                         </div>
-                        
-                        <p id="overall-progress-summary" class="text-xs font-bold text-slate-300 mt-4">0 / 5 Helyiség Auditálva</p>
-                        <p class="text-[9px] text-slate-500 mt-1">Az összes audit sikeres elvégzése után a Cyber Guardian jelvény automatikusan kiadásra kerül.</p>
+
+                        <div class="cyber-course-progress-divider"></div>
+                        <div class="cyber-course-room-heading">HELYISÉGEK ÁLLAPOTA</div>
+                        <div class="cyber-course-room-list">
+                            <div class="cyber-course-room-row"><span class="cyber-course-room-number">01</span><span class="cyber-course-room-name">Előtér</span><strong id="room-progress-status-1">NYITOTT</strong></div>
+                            <div class="cyber-course-room-row"><span class="cyber-course-room-number">02</span><span class="cyber-course-room-name">Iroda</span><strong id="room-progress-status-2">ZÁRVA</strong></div>
+                            <div class="cyber-course-room-row"><span class="cyber-course-room-number">03</span><span class="cyber-course-room-name">Nyomozó iroda</span><strong id="room-progress-status-3">ZÁRVA</strong></div>
+                            <div class="cyber-course-room-row"><span class="cyber-course-room-number">04</span><span class="cyber-course-room-name">Tárgyaló</span><strong id="room-progress-status-4">ZÁRVA</strong></div>
+                            <div class="cyber-course-room-row"><span class="cyber-course-room-number">05</span><span class="cyber-course-room-name">Szerverhelyiség</span><strong id="room-progress-status-5">ZÁRVA</strong></div>
+                        </div>
+
+                        <div class="cyber-course-next-goal">
+                            <div class="cyber-course-next-label">KÖVETKEZŐ CÉL</div>
+                            <strong id="course-next-goal-title">1. Előtér auditjának teljesítése</strong>
+                            <span id="course-next-goal-copy">Kezdje az első helyiség biztonsági ellenőrzésével.</span>
+                        </div>
                     </div>
                 </div>
 
@@ -379,7 +398,7 @@
                                 <rect x="50" y="50" width="50" height="15" fill="none" stroke="#1d4ed8" stroke-opacity="0.25" stroke-width="1"/>
                                 <circle cx="75" cy="80" r="12" fill="none" stroke="#1d4ed8" stroke-opacity="0.15" stroke-width="1"/>
 
-                                <text x="140" y="140" fill="#f8fafc" font-size="14" font-weight="black" text-anchor="middle" class="room-text">1. PORTA</text>
+                                <text x="140" y="140" fill="#f8fafc" font-size="14" font-weight="black" text-anchor="middle" class="room-text">1. ELŐTÉR</text>
                                 <text x="140" y="160" fill="#64748b" font-size="10" text-anchor="middle">Információbiztonsági Alapok</text>
                                 <text x="140" y="180" fill="#10b981" font-size="9" font-weight="bold" font-family="monospace" text-anchor="middle" id="room1-status">LETÖLTVE</text>
                                 
@@ -512,7 +531,7 @@
                     <div id="dashboard-next-icon" class="cyber-next-icon">01</div>
                     <div class="min-w-0 flex-1">
                         <div id="dashboard-next-title" class="text-sm font-black text-white truncate">Információbiztonsági alapok</div>
-                        <div id="dashboard-next-subtitle" class="text-[10px] text-slate-500 mt-0.5">1. PORTA</div>
+                        <div id="dashboard-next-subtitle" class="text-[10px] text-slate-500 mt-0.5">1. ELŐTÉR</div>
                         <div class="mt-2 h-1.5 rounded-full bg-slate-900 overflow-hidden"><div id="dashboard-next-bar" class="h-full rounded-full bg-cyan-400" style="width:0%"></div></div>
                         <div id="dashboard-next-percent" class="text-[9px] font-mono text-cyan-400 mt-1">Kezdésre vár</div>
                     </div>
